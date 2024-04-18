@@ -1,14 +1,20 @@
-from flask import Flask, request, jsonify, redirect, make_response, send_from_directory
+from flask import Flask, render_template, request, redirect, url_for, jsonify, send_from_directory, send_file, make_response
 import pyodbc
 import datetime
 from flask_cors import CORS
 from flask import send_file
 from oracle import connection_string
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="C:/Users/baril/Documents/9no Semestre Sistemas/Ingeniería de Software/Ingenieria_software/Frontend/templates")
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:8080", "supports_credentials": True}})
 
-@app.route('/login', methods=['POST'])
+
+@app.route("/")
+def index():
+    return render_template("login.html")
+
+
+@app.route('/api/login', methods=['POST'])
 def login():
     # Obtener las credenciales de la solicitud
     data = request.get_json()
@@ -20,8 +26,8 @@ def login():
     cursor = connection.cursor()
 
     # Consulta para verificar las credenciales
-    query = "SELECT * FROM C##DBA.Usuario WHERE CorreoElectronico = :username AND Contraseña = :password"
-    cursor.execute(query, {'username': username, 'password': password})
+    query = f"SELECT * FROM C##USER_DBA.Usuario WHERE CorreoElectronico = '{username}' AND Contraseña = '{password}'"
+    cursor.execute(query)
     user = cursor.fetchone()
 
     # Cerrar la conexión
