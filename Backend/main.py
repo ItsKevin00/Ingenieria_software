@@ -5,13 +5,13 @@ from flask_cors import CORS
 from flask import send_file
 from oracle import connection_string
 
-app = Flask(__name__, template_folder="C:/Users/baril/Documents/9no Semestre Sistemas/Ingeniería de Software/Ingenieria_software/Frontend/templates")
+app = Flask(__name__, template_folder="C:/Users/baril/Documents/9no Semestre Sistemas/Ingeniería de Software/Ingenieria_software-1/Frontend/templates", static_folder='C:/Users/baril/Documents/9no Semestre Sistemas/Ingeniería de Software/Ingenieria_software-1/Frontend/static')
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:8080", "supports_credentials": True}})
 
 
 @app.route("/")
 def index():
-    return render_template("login.html")
+    return render_template("Login.html")
 
 
 @app.route('/api/login', methods=['POST'])

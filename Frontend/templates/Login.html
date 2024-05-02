@@ -5,8 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link rel="stylesheet" href="/Perros/Static/css/stylelog.css">
+    <link rel="stylesheet" href="/static/css/stylelog.css">
     <title>Login</title>
+    
 </head>
 
 <body>
@@ -19,7 +20,7 @@
                     <a href="#" class="icon"><i class="fa-brands fa-google"></i></a>
                     <a href="#" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
                 </div>
-                <span>o utilza tu correo para registrarte</span>
+                <span>Utilza tu correo para registrarte</span>
                 <input type="text" placeholder="Name">
                 <input type="email" placeholder="Email">
                 <input type="password" placeholder="Password">
@@ -27,17 +28,17 @@
             </form>
         </div>
         <div class="form-container sign-in">
-            <form>
-                <h1>Incia secion</h1>
+            <form id="loginForm">
+                <h1>Incia sesión</h1>
                 <div class="social-icons">
                     <a href="#" class="icon"><i class="fa-brands fa-google"></i></a>
                     <a href="#" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
                 </div>
-                <span>utiliza tu correo y contraseña para iniciar</span>
-                <input type="email" placeholder="Email">
-                <input type="password" placeholder="Password">
-                <a href="#">Olvidaste tu cntraseña?</a>
-                <button>Ingresar</button>
+                <span>Utiliza tu correo y contraseña para iniciar</span>
+                <input type="email" id="username" placeholder="Email">
+                <input type="password" id="password" placeholder="Password">
+                <a href="#">Olvidaste tu contraseña?</a>
+                <button type="submit">Ingresar</button>
             </form>
         </div>
         <div class="toggle-container">
@@ -49,14 +50,13 @@
                 </div>
                 <div class="toggle-panel toggle-right">
                     <h1>¿No tienes cuenta?</h1>
-                    <p>Refistrate para poder acceder a todas las funciones de la pagina</p>
+                    <p>Registrate para poder acceder a todas las funciones de la página</p>
                     <button class="hidden" id="register">Registrarse</button>
                 </div>
             </div>
         </div>
     </div>
-
-    <script src="/Perros/Static/js/script.js"></script>
+    <script src="/static/js/script.js"></script>
 </body>
 
 </html>

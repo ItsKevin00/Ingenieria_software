@@ -9,3 +9,31 @@ registerBtn.addEventListener('click', () => {
 loginBtn.addEventListener('click', () => {
     container.classList.remove("active");
 });
+document.getElementById("loginForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+  
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    fetch("/api/login", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ username, password })
+    })
+    .then(response => {
+        if (response.ok) {
+            window.location.href = "index.html";
+            return response.json();
+        }
+        throw new Error("Network response was not ok.");
+    })
+    .then(data => {
+        // Manejar la respuesta de la API
+        console.log(data);
+    })
+    .catch(error => {
+        console.error("Error al realizar la solicitud:", error);
+    });
+});
