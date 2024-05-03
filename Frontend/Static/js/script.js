@@ -24,7 +24,12 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
     })
     .then(response => {
         if (response.ok) {
-            window.location.href = "index.html";
+
+            // Obtener la URL actual
+            const currentUrl = window.location.href;
+            console.log("URL actual:", currentUrl);
+
+            window.location.href = "/index";
             return response.json();
         }
         throw new Error("Network response was not ok.");

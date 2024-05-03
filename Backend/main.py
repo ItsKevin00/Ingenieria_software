@@ -13,6 +13,11 @@ CORS(app, resources={r"/api/*": {"origins": "http://localhost:8080", "supports_c
 def index():
     return render_template("Login.html")
 
+# Ruta para la página de inicio
+@app.route("/index")
+def inicio():
+    return render_template("index.html")
+
 
 @app.route('/api/login', methods=['POST'])
 def login():
