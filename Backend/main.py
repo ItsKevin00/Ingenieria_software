@@ -46,5 +46,64 @@ def login():
         # Credenciales incorrectas
         return jsonify({'message': 'Datos inválidos'}), 401
 
+@app.route('/api/registro', methods=['POST'])
+def registro():
+    #Obtener los datos para el registro del usuario
+    data = request.get_json()
+    primer_nombre = data.get('nombre1', False)
+    segundo_nombre = data.get('nombre2', False)
+    primer_apellido = data.get('apellido1', False)
+    segundo_apellido = data.get('apellido2', False)
+    direccion = data.get('direccion', False)
+    telefono = data.get('telefono', False)
+    email = data.get('email', False)
+    password = data.get('password', False)
+    puesto = 'Usuario'
+
+    if primer_nombre == False or email == False or password == False:
+        # Datos insuficientes
+        return jsonify({'message': 'Datos inválidos'}), 401
+
+    # Conectar a la base de datos
+    connection = pyodbc.connect(connection_string)
+    cursor = connection.cursor()
+
+    # Verificar si el usuario ya existe en la base de datos
+    query = f"SELECT * FROM C##USER_DBA.Usuario WHERE CorreoElectronico = '{email}'"
+    cursor.execute(query)
+    usuario = cursor.fetchone()
+
+    if usuario:
+        return jsonify({'message': 'El usuario ya existe.'}), 401
+    
+    else:
+        # Consulta para crear el nuevo usuario en la base de datos
+        registro_query = """INSERT INTO C##USER_DBA.Usuario
+                          (Puesto, Nombre1, Nombre2, Apellido1, Apellido2, Direccion, Telefono, CorreoElectronico, Contraseña)
+                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"""
+        cursor.execute(registro_query, (puesto, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, direccion, telefono, email, password))
+        # Realizar el commitn para guardar los datos en la bd y cerrar la conexión
+        connection.commit()
+
+        # Consulta para verificar si el usuario se creó correctamente
+        query = f"SELECT * FROM C##USER_DBA.Usuario WHERE CorreoElectronico = '{email}' AND Contraseña = '{password}'"
+        cursor.execute(query)
+        user = cursor.fetchone()
+
+        # Cerrar la conexión
+        cursor.close()
+        connection.close()
+
+        if user:
+            # Creación exitosa
+            return jsonify({'message': 'Creación exitosa'}), 200
+        else:
+            # No se pudo crear el usuario
+            return jsonify({'message': 'No se pudo crear el usuario'}), 401
+
+
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)

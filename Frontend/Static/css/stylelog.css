@@ -208,3 +208,16 @@ body{
 .container.active .toggle-right{
     transform: translateX(200%);
 }
+
+.input-group {
+    display: flex;
+}
+
+.column {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.column:last-child {
+    margin-right: 0;
+}

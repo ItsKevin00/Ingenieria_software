@@ -14,19 +14,33 @@
 
     <div class="container" id="container">
         <div class="form-container sign-up">
-            <form>
+            <form id="sing-up form">
                 <h1>Crea una cuenta</h1>
                 <div class="social-icons">
                     <a href="#" class="icon"><i class="fa-brands fa-google"></i></a>
                     <a href="#" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
                 </div>
-                <span>Utilza tu correo para registrarte</span>
-                <input type="text" placeholder="Name">
-                <input type="email" placeholder="Email">
-                <input type="password" placeholder="Password">
-                <button>Registrarse</button>
+                <span>Utiliza tu correo para registrarte</span>
+                <div class="input-group">
+                    <div class="column">
+                        <input type="text" id="nombre1" placeholder="Primer Nombre" required="1">
+                        <input type="text" id="apellido1" placeholder="Primer Apellido" required="1">
+                        <input type="text" id="direccion" placeholder="Dirección">
+                    </div>
+                    <div class="column">
+                        <input type="text" id="nombre2" placeholder="Segundo Nombre">
+                        <input type="text" id="apellido2" placeholder="Segundo Apellido">
+                        <input type="text" id="telefono" placeholder="Teléfono">
+                    </div>
+                </div>
+                <input type="email" id="email_new" placeholder="Correo electrónico" required="1">
+                <input type="password" id="password_new" placeholder="Contraseña" required="1" oninput="validatePassword(this.value)">
+                <div id="passwordError" style="color: red;"></div>
+                <div id="passwordMessage" style="color: green;"></div>
+                <button type="submit">Registrarse</button>
             </form>
         </div>
+        
         <div class="form-container sign-in">
             <form id="loginForm">
                 <h1>Incia sesión</h1>
@@ -35,8 +49,8 @@
                     <a href="#" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
                 </div>
                 <span>Utiliza tu correo y contraseña para iniciar</span>
-                <input type="email" id="username" placeholder="Email">
-                <input type="password" id="password" placeholder="Password">
+                <input type="email" id="username" placeholder="Correo electrónico">
+                <input type="password" id="password" placeholder="Contraseña">
                 <a href="#">Olvidaste tu contraseña?</a>
                 <button type="submit">Ingresar</button>
             </form>
@@ -45,7 +59,7 @@
             <div class="toggle">
                 <div class="toggle-panel toggle-left">
                     <h1>Bienvenido de vuelta!</h1>
-                    <p>Si ya tienes Cuenta, ingresa tus datos</p>
+                    <p>Si ya tienes cuenta, ingresa tus datos</p>
                     <button class="hidden" id="login">Ingresar</button>
                 </div>
                 <div class="toggle-panel toggle-right">
