@@ -95,7 +95,7 @@ document.getElementById('sing-up form').addEventListener("submit", function(even
 // Esta función verifica en tiempo real si la contaraseña cumple con ciertos criterios de seguridad
 function validatePassword(password) {
     var passwordError = document.getElementById("passwordError");
-    
+    var signUpButton = document.getElementById("sign-up");
     var criteria = [];
 
     if (password.length === 0) {
@@ -125,8 +125,10 @@ function validatePassword(password) {
     if (criteria.length > 0) {
         passwordError.textContent = "La contraseña debe contener " + criteria.join(", ") + ".";
         passwordMessage.textContent = "";
+        signUpButton.disabled = true; 
     } else {
         passwordError.textContent = "";
         passwordMessage.textContent = "Contraseña segura.";
+        signUpButton.disabled = false;
     }
 }
