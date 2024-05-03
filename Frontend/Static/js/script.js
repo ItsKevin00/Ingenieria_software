@@ -26,8 +26,8 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
         if (response.ok) {
 
             // Obtener la URL actual
-            const currentUrl = window.location.href;
-            console.log("URL actual:", currentUrl);
+            // const currentUrl = window.location.href;
+            // console.log("URL actual:", currentUrl);
 
             window.location.href = "/index";
             return response.json();
