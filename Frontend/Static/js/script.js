@@ -32,7 +32,12 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
             window.location.href = "/index";
             return response.json();
         }
-        throw new Error("Network response was not ok.");
+        else {
+            const error = document.getElementById('passError');
+            error.textContent = "El usuario/contraseña es incorrecta.";
+
+        }
+        // throw new Error("Network response was not ok.");
     })
     .then(data => {
         // Manejar la respuesta de la API
@@ -91,6 +96,14 @@ document.getElementById('sing-up form').addEventListener("submit", function(even
 
 });
 
+// Función para eliminar el mensaje de error al borrar la contraseña
+function passError(pass){
+    var error = document.getElementById('passError');
+    if (pass.length === 0) {
+        error.textContent = "";
+        return;
+    }
+}
 
 // Esta función verifica en tiempo real si la contaraseña cumple con ciertos criterios de seguridad
 function validatePassword(password) {
@@ -100,6 +113,7 @@ function validatePassword(password) {
 
     if (password.length === 0) {
         passwordError.textContent = "";
+        passwordMessage.textContent = "";
         return;
     }
     if (password.length < 8) {

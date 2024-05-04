@@ -43,14 +43,15 @@
         
         <div class="form-container sign-in">
             <form id="loginForm">
-                <h1>Incia sesión</h1>
+                <h1>Inicia sesión</h1>
                 <div class="social-icons">
                     <a href="#" class="icon"><i class="fa-brands fa-google"></i></a>
                     <a href="#" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
                 </div>
                 <span>Utiliza tu correo y contraseña para iniciar</span>
                 <input type="email" id="username" placeholder="Correo electrónico">
-                <input type="password" id="password" placeholder="Contraseña">
+                <input type="password" id="password" placeholder="Contraseña" oninput="passError(this.value)">
+                <div id="passError" style="color: red;"></div>
                 <a href="#">Olvidaste tu contraseña?</a>
                 <button type="submit">Ingresar</button>
             </form>
