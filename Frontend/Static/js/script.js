@@ -9,9 +9,19 @@ registerBtn.addEventListener('click', () => {
 loginBtn.addEventListener('click', () => {
     container.classList.remove("active");
 });
+
+//Función para verificar si existe el token de inicio de sesión
+document.addEventListener("DOMContentLoaded", function() {
+    const token = localStorage.getItem('token');
+    if (!token && window.location.pathname !== '/') {
+        window.location.href = "/";
+    }
+});
+
+//Función para obtener los datos de inicio de sesión
 document.getElementById("loginForm").addEventListener("submit", function(event) {
     event.preventDefault();
-  
+
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
 
@@ -24,29 +34,47 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
     })
     .then(response => {
         if (response.ok) {
-
-            // Obtener la URL actual
-            // const currentUrl = window.location.href;
-            // console.log("URL actual:", currentUrl);
-
-            window.location.href = "/index";
             return response.json();
+        } else {
+            throw new Error("Error al iniciar sesión");
         }
-        else {
-            const error = document.getElementById('passError');
-            error.textContent = "El usuario/contraseña es incorrecta.";
-
-        }
-        // throw new Error("Network response was not ok.");
     })
     .then(data => {
-        // Manejar la respuesta de la API
+        localStorage.setItem('token', data.token);
+        window.location.href = "/index";  // Redirigir a la página de inicio si existe el token
+    })
+    .catch(error => {
+        console.error("Error al iniciar sesión:", error);
+        const errorElement = document.getElementById('passError');
+        errorElement.textContent = "Error al iniciar sesión. Verifica tus credenciales e intenta nuevamente.";
+    });
+});
+
+function fetchProtectedRoute() {
+    fetch("/protected_route", {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem('token')}`
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            throw new Error("Acceso denegado");
+        }
+    })
+    .then(data => {
         console.log(data);
     })
     .catch(error => {
-        console.error("Error al realizar la solicitud:", error);
+        console.error("Error:", error);
+        window.location.href = "/login";
     });
-});
+}
+
+
 
 document.getElementById('sing-up form').addEventListener("submit", function(event) {
     event.preventDefault();

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subir imagen a la base de datos</title>
+    <script>
+        function subirImagen() {
+        var archivo = document.getElementById('archivo').files[0];
+        var formData = new FormData();
+        formData.append('imagen', archivo);
+
+        fetch("/api/animales", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                // Mostrar la imagen si la respuesta es exitosa
+                document.getElementById('imagen').src = URL.createObjectURL(archivo);
+                return response.json();
+            } else {
+                throw new Error('Error en la solicitud.');
+            }
+        })
+        .then(data => {
+            // Manejar la respuesta de la API
+            alert('¡Éxito!');
+            console.log(data);
+            window.location.reload(); 
+        })
+        .catch(error => {
+            console.error("Error al realizar la solicitud:", error);
+        });
+    }
+
+    </script>
+</head>
+<body>
+    <h2>Subir Imagen</h2>
+    <form enctype="multipart/form-data">
+        <input type="file" id="archivo" name="archivo" accept="image/*">
+        <br>
+        <button type="button" onclick="subirImagen()">Subir Imagen</button>
+    </form>
+    <!-- Mostrar la imagen aquí -->
+    <img id="imagen" src="" alt="Imagen del animal">
+</body>
+</html>

@@ -1,25 +1,20 @@
-// Función para cerrar sesión
-function logout() {
-    // Después de cerrar sesión, redireccionamos a la página de inicio de sesión
-    window.location.href = "/?logged_out=true";
-    console.log("Sesión cerrada!!");
-}
+//Función para verificar si existe el token de inicio de sesión
+document.addEventListener("DOMContentLoaded", function() {
+    const token = localStorage.getItem('token');
+    if (!token && window.location.pathname !== '/') {
+        window.location.href = "/";
+    }
+});
 
-// Verificar si el usuario ha cerrado sesión
-const urlParams = new URLSearchParams(window.location.search);
-const loggedOut = urlParams.get('logged_out');
-
-// Si el usuario ha cerrado sesión, redirigir a la página de inicio de sesión
-if (loggedOut === 'true') {
-    // Establecer una cookie para marcar que el usuario ha cerrado sesión
-    document.cookie = "logged_out=true; path=/";
-    window.location.href = "/";
-}
-
-// Agregar el event listener para cerrar sesión
-document.getElementById("logoutButton").addEventListener("click", logout);
-
-// Impedir que el usuario retroceda a esta página después de cerrar sesión
-window.addEventListener('popstate', function (event) {
-    window.location.href = "/";
+//Función para cerrar sesió y borrar el token de inicio de sesión
+document.addEventListener("DOMContentLoaded", function() {
+    const logoutButton = document.getElementById('logoutButton');
+    if (logoutButton) {
+        logoutButton.addEventListener('click', function(event) {
+            event.preventDefault();
+            localStorage.removeItem('token');
+            window.location.href = '/';
+            window.location.reload();
+        });
+    }
 });
