@@ -2,6 +2,10 @@ const container = document.getElementById('container');
 const registerBtn = document.getElementById('register');
 const loginBtn = document.getElementById('login');
 
+document.getElementById('donate-btn').addEventListener('click', function() {
+    alert('Gracias Por la donacion!');
+});
+
 registerBtn.addEventListener('click', () => {
     container.classList.add("active");
 });
