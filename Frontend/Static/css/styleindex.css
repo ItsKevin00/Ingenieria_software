@@ -1,0 +1,110 @@
+/* Fondo de la página */
+body {
+    background-color: #e6e6fa; /* Morado claro */
+}
+
+/* Estilo para las tarjetas */
+.card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra alrededor de las tarjetas */
+    transition: transform 0.2s; /* Transición suave al pasar el ratón */
+}
+
+.card:hover {
+    transform: scale(1.05); /* Efecto de agrandar la tarjeta al pasar el ratón */
+}
+
+.navbar {
+    background-color: #8a2be2; /* Fondo morado para la barra de navegación */
+}
+
+.navbar-brand, .nav-link {
+    color: white !important; /* Texto blanco para el brand y los links */
+}
+
+.nav-link:hover {
+    color: #dda0dd !important; /* Texto color lavanda al pasar el ratón */
+}
+
+/* Ajuste del espaciado de la tarjeta */
+.card-body {
+    padding: 1.5rem;
+}
+
+/* Espaciado entre tarjetas */
+.card {
+    margin-bottom: 1.5rem;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+.support-section {
+    background: url('path-to-your-image.jpg') no-repeat center center/cover;
+    color: #fff;
+    padding: 50px 20px;
+    text-align: center;
+    position: relative;
+}
+.support-section::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+.support-content {
+    position: relative;
+    z-index: 2;
+}
+.support-content h1 {
+    font-size: 3em;
+    margin-bottom: 20px;
+}
+.support-content p {
+    font-size: 1.2em;
+    margin-bottom: 30px;
+}
+.donate-btn {
+    background-color: #8a2be2;
+    color: #fff;
+    padding: 15px 30px;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+     
+}
+.support-options {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+.support-option {
+    background-color: #fff;
+    color: #333;
+    padding: 20px;
+    margin: 0 10px;
+    border-radius: 10px;
+    width: 150px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.support-option img {
+    max-width: 50px;
+    margin-bottom: 10px;
+}
+.support-option h3 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+.support-option p {
+    font-size: 1em;
+}
+
