@@ -52,7 +52,7 @@
                 <input type="email" id="username" placeholder="Correo electrónico" required="1">
                 <input type="password" id="password" placeholder="Contraseña" oninput="passError(this.value)" required="1">
                 <div id="passError" style="color: red;"></div>
-                <a href="#">Olvidaste tu contraseña?</a>
+                <a href="#" id="forgotPasswordLink">Olvidaste tu contraseña?</a>
                 <button type="submit">Ingresar</button>
             </form>
         </div>
@@ -70,7 +70,28 @@
                 </div>
             </div>
         </div>
-    </div>
+               <!-- Forgot Password Form -->
+            <div class="popup-container" id="popupContainer">
+                <div class="form-container forgot-password" style="display: none;">
+                    <form id="forgotPasswordForm">
+                        <h1>Recuperar contraseña</h1>
+                        <input type="email" id="forgotEmail" placeholder="Correo electrónico" required="1">
+                        <button type="submit">Enviar</button>
+                        <a href="#" id="backToLogin">Volver al inicio de sesión</a>
+                    </form>
+                </div>
+        
+                <!-- Reset Password Form -->
+                <div class="form-container reset-password" style="display: none;">
+                    <form id="resetPasswordForm">
+                        <h1>Restablecer contraseña</h1>
+                        <input type="text" id="resetToken" placeholder="Token de verificación" required>
+                        <input type="password" id="newPassword" placeholder="Nueva contraseña" required>
+                        <button type="submit">Restablecer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     <script src="/static/js/script.js"></script>
 </body>
 

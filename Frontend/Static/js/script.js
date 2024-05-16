@@ -2,13 +2,35 @@ const container = document.getElementById('container');
 const registerBtn = document.getElementById('register');
 const loginBtn = document.getElementById('login');
 
-document.getElementById('donate-btn').addEventListener('click', function() {
-    alert('Gracias Por la donacion!');
+document.addEventListener('DOMContentLoaded', function() {
+    var donateBtn = document.getElementById('donate-btn');
+    if (donateBtn) {
+        donateBtn.addEventListener('click', function() {
+            alert('¡Gracias por la donación!');
+        });
+    }
 });
 
-registerBtn.addEventListener('click', () => {
-    container.classList.add("active");
+document.addEventListener('DOMContentLoaded', function() {
+    var donateBtn = document.getElementById('donate-btn');
+    var registerBtn = document.getElementById('register-btn');
+    var container = document.querySelector('.container');
+
+    if (donateBtn) {
+        donateBtn.addEventListener('click', function() {
+            alert('¡Gracias por la donación!');
+        });
+    }
+
+    if (registerBtn) {
+        registerBtn.addEventListener('click', function() {
+            if (container) {
+                container.classList.add('active');
+            }
+        });
+    }
 });
+
 
 loginBtn.addEventListener('click', () => {
     container.classList.remove("active");
@@ -29,6 +51,7 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
 
+    console.log("Enviando datos a la API de inicio de sesión.");
     fetch("/api/login", {
         method: "POST",
         headers: {
@@ -178,3 +201,83 @@ function validatePassword(password) {
         signUpButton.disabled = false;
     }
 }
+
+
+//Función de olvido de contraseña
+document.addEventListener("DOMContentLoaded", function() {
+    const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+    const backToLogin = document.getElementById('backToLogin');
+    const signInContainer = document.querySelector('.sign-in');
+    const popupContainer = document.getElementById('popupContainer');
+
+    if (forgotPasswordLink) {
+        forgotPasswordLink.addEventListener('click', function(event) {
+            event.preventDefault();
+            signInContainer.style.display = 'none';
+            popupContainer.style.display = 'block';
+            document.querySelector('.forgot-password').style.display = 'flex';
+        });
+    }
+
+    if (backToLogin) {
+        backToLogin.addEventListener('click', function(event) {
+            event.preventDefault();
+            signInContainer.style.display = 'flex';
+            popupContainer.style.display = 'none';
+        });
+    }
+
+    const forgotPasswordForm = document.getElementById('forgotPasswordForm');
+    if (forgotPasswordForm) {
+        forgotPasswordForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const email = document.getElementById('forgotEmail').value;
+
+            fetch('/api/forgot-password', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email: email })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Se ha enviado un token de verificación a tu correo.');
+                    forgotPasswordContainer.style.display = 'none';
+                    resetPasswordContainer.style.display = 'flex';
+                } else {
+                    alert('No se pudo enviar el token. Verifica tu correo e intenta nuevamente.');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    }
+
+    const resetPasswordForm = document.getElementById('resetPasswordForm');
+    if (resetPasswordForm) {
+        resetPasswordForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const token = document.getElementById('resetToken').value;
+            const newPassword = document.getElementById('newPassword').value;
+
+            fetch('/api/reset-password', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ token: token, newPassword: newPassword })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Tu contraseña ha sido restablecida con éxito.');
+                    window.location.href = '/login';
+                } else {
+                    alert('Token inválido o expirado. Intenta nuevamente.');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    }
+});

@@ -11,7 +11,7 @@ import secrets
 from functools import wraps
 
 
-app = Flask(__name__, template_folder="C:/Users/baril/Documents/9no Semestre Sistemas/Ingeniería de Software/Ingenieria_software-1/Frontend/templates", static_folder='C:/Users/baril/Documents/9no Semestre Sistemas/Ingeniería de Software/Ingenieria_software-1/Frontend/static')
+app = Flask(__name__, template_folder="C:/Users/baril/Documents/9no Semestre Sistemas/Ingeniería de Software/Desarrollo/Ingenieria_software/Frontend/templates", static_folder='C:/Users/baril/Documents/9no Semestre Sistemas/Ingeniería de Software/Desarrollo/Ingenieria_software/Frontend/static')
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:8080", "supports_credentials": True}})
 
 
@@ -27,6 +27,19 @@ def inicio():
 @app.route("/test")
 def test():
     return render_template("test.html")
+
+@app.route("/apoyanos")
+def apoyanos():
+    return render_template("About.html")
+
+@app.route("/adopta")
+def adopta():
+    dogs = [
+        [1, "Firulais", "Grande", "2 años", "/static/img/perro1.jpg"],
+        [2, "Bobby", "Mediano", "3 años", "/static/img/perro2.jpg"],
+        [3, "Max", "Pequeño", "1 año", "/static/img/perro3.jpg"]
+    ]
+    return render_template("Adopta.html", dogs = dogs)
 
 
 # Generar token JWT
@@ -92,6 +105,7 @@ def login():
         cadena_aleatoria = secrets.token_hex(longitud)
         cadena = str(cadena_aleatoria)
         token = generate_token(cadena_aleatoria)
+        print("Datos correctos en el inicio de sesión")
         return jsonify({'token': token}), 200
     else:
         # Credenciales incorrectas

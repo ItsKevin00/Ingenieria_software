@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", function() {
         logoutButton.addEventListener('click', function(event) {
             event.preventDefault();
             localStorage.removeItem('token');
+            window.location.reload();
             window.location.href = '/';
             window.location.reload();
         });
