@@ -3,47 +3,216 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Subir imagen a la base de datos</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/styleindex.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <title>Registro de Animales</title>
+    <style>
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        input, select, button {
+            margin-top: 5px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #157cdd;
+            color: #fff;
+            cursor: pointer;
+            border: none;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #1a00ac;
+        }
+        img {
+            margin-top: 20px;
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .publicado-label {
+            display: inline-block;
+            width: auto;
+            margin-right: 10px;
+        }
+
+        input[type="checkbox"] {
+            vertical-align: middle;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
-        function subirImagen() {
-        var archivo = document.getElementById('archivo').files[0];
-        var formData = new FormData();
-        formData.append('imagen', archivo);
+        $(document).ready(function() {
+            $('#refugio_id').select2({
+                placeholder: 'Buscar refugio...',
+                ajax: {
+                    url: '/api/refugios',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            search: params.term
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data.map(function(refugio) {
+                                return { id: refugio.id, text: refugio.nombre };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
 
-        fetch("/api/animales", {
-            method: "POST",
-            body: formData
-        })
-        .then(response => {
-            if (response.ok) {
-                // Mostrar la imagen si la respuesta es exitosa
-                document.getElementById('imagen').src = URL.createObjectURL(archivo);
-                return response.json();
-            } else {
-                throw new Error('Error en la solicitud.');
-            }
-        })
-        .then(data => {
-            // Manejar la respuesta de la API
-            alert('¡Éxito!');
-            console.log(data);
-            window.location.reload(); 
-        })
-        .catch(error => {
-            console.error("Error al realizar la solicitud:", error);
+            $('#propietario_id').select2({
+                placeholder: 'Buscar propietario...',
+                ajax: {
+                    url: '/api/propietarios',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            search: params.term
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data.map(function(propietario) {
+                                return { id: propietario.id, text: propietario.nombre };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
         });
-    }
 
+        function subirDatos() {
+            var formData = new FormData(document.getElementById('formulario-animal'));
+
+            formData.append('publicado', document.getElementById('publicado').checked ? 'Y' : 'N');
+
+            fetch("/api/animales", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    var archivo = document.getElementById('archivo').files[0];
+                    if (archivo) {
+                        document.getElementById('imagen').src = URL.createObjectURL(archivo);
+                    }
+                    return response.json();
+                } else {
+                    throw new Error('Error en la solicitud.');
+                }
+            })
+            .then(data => {
+                console.log(data);
+                window.location.reload();
+            })
+            .catch(error => {
+                console.error("Error al realizar la solicitud:", error);
+            });
+        }
     </script>
 </head>
 <body>
-    <h2>Subir Imagen</h2>
-    <form enctype="multipart/form-data">
-        <input type="file" id="archivo" name="archivo" accept="image/*">
-        <br>
-        <button type="button" onclick="subirImagen()">Subir Imagen</button>
-    </form>
-    <!-- Mostrar la imagen aquí -->
-    <img id="imagen" src="" alt="Imagen del animal">
+    <nav class="navbar navbar-light fixed-top navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#">No se que poner xD</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarOpen">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarOpen">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/index">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/apoyanos">Apoyanos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/adopta">Adopta</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Veterinario</a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="logoutButton" class="nav-link" href="/">Cerrar sesión</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container mt-5 pt-5">
+        <h2>Registro de Animales</h2>
+        <form id="formulario-animal" enctype="multipart/form-data" style="margin-bottom: 20px;">
+            <label for="nombre">Nombre</label>
+            <input type="text" id="nombre" name="nombre" maxlength="50" required="1">
+
+            <label for="especie">Especie</label>
+            <input type="text" id="especie" name="especie" maxlength="50" required="1">
+
+            <label for="raza">Raza</label>
+            <input type="text" id="raza" name="raza" maxlength="50" required="1">
+
+            <label for="genero">Género</label>
+            <select id="genero" name="genero" required="1">
+                <option value="macho">Macho</option>
+                <option value="hembra">Hembra</option>
+            </select>
+
+            <label for="esterilizado">Esterilizado (S/N)</label>
+            <select id="esterilizado" name="esterilizado" required="1">
+                <option value="S">Sí</option>
+                <option value="N">No</option>
+            </select>
+
+            <label for="ubicacion_actual">Ubicación Actual</label>
+            <input type="text" id="ubicacion_actual" name="ubicacion_actual" maxlength="100" required="1">
+
+            <label for="refugio_id">Refugio</label>
+            <select id="refugio_id" name="refugio_id" required="1"></select>
+
+            <label for="propietario_id">Propietario</label>
+            <select id="propietario_id" name="propietario_id" required="1"></select>
+
+            <label for="edad">Edad</label>
+            <input type="number" id="edad" name="edad" required="1">
+
+            <label for="tamanio">Tamaño</label>
+            <select id="tamanio" name="tamanio" required="1">
+                <option value="grande">Grande</option>
+                <option value="mediano">Mediano</option>
+                <option value="pequeño">Pequeño</option>
+            </select>
+
+            <label for="publicado" class="publicado-label">Publicado</label>
+            <input type="checkbox" id="publicado" name="publicado" required="1">
+
+            <label for="archivo">Imagen</label>
+            <input type="file" id="archivo" name="archivo" accept="image/*" required>
+
+            <button type="button" onclick="subirDatos()">Registrar Animal</button>
+        </form>
+        <!-- <img id="imagen" src="" alt="Imagen del animal"> -->
+    </div>
 </body>
 </html>

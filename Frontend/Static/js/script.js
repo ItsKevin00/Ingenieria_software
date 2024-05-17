@@ -2,6 +2,14 @@ const container = document.getElementById('container');
 const registerBtn = document.getElementById('register');
 const loginBtn = document.getElementById('login');
 
+//Función para verificar si existe el token de inicio de sesión
+document.addEventListener("DOMContentLoaded", function() {
+    const token = localStorage.getItem('token');
+    if (!token && window.location.pathname !== '/') {
+        window.location.href = "/";
+    }
+});
+
 document.addEventListener('DOMContentLoaded', function() {
     var donateBtn = document.getElementById('donate-btn');
     if (donateBtn) {
@@ -13,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 document.addEventListener('DOMContentLoaded', function() {
     var donateBtn = document.getElementById('donate-btn');
-    var registerBtn = document.getElementById('register-btn');
+    var registerBtn = document.getElementById('register');
     var container = document.querySelector('.container');
 
     if (donateBtn) {
@@ -68,6 +76,17 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
     })
     .then(data => {
         localStorage.setItem('token', data.token);
+        localStorage.setItem('rol', data.rol);
+        // if (data.rol === "Administrador") {
+        //     const navbarAdmin = document.getElementById("navbarAdmin");
+        //     navbarAdmin.innerHTML = `
+        //         <ul class="navbar-nav ml-auto">
+        //             <li class="nav-item">
+        //                 <a class="nav-link" href="/administrar">Administrar</a>
+        //             </li>
+        //         </ul>
+        //     `;
+        // }
         window.location.href = "/index";  // Redirigir a la página de inicio si existe el token
     })
     .catch(error => {
