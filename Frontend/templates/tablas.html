@@ -4,47 +4,258 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/Static/css/styleindex.css">
-    <title>{% titulo %}</title>
+    <link rel="stylesheet" href="/static/css/styleindex.css">
+    <title>{{ titulo }}</title>
 </head>
 <body>
     <nav class="navbar navbar-light fixed-top navbar-expand-lg">
         <div class="container">
             <a class="navbar-brand" href="#">No se que poner xD</a>
 
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarOpen">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarOpen" aria-controls="navbarOpen" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <div class="collapse navbar-collapse" id="navbarOpen">
+                <div id="navbarAdmin" class="collapse navbar-collapse">
+                    <!-- Este será el menú de administrador, inicialmente vacío -->
+                </div>
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Home</a>
+                        <a class="nav-link" href="/index">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/Abaut.html">Apoyanos</a>
+                        <a class="nav-link" href="/About.html">Apóyanos</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/Adopta.html">Adopta</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Veterianrio</a>
+                        <a class="nav-link" href="#">Veterinario</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/Login.html">Iniciar secion</a>
+                        <a class="nav-link" href="/Login.html">Iniciar sesión</a>
                     </li>
                 </ul>
             </div>
-            
         </div>
     </nav>
-    {% if html_table %}
-        {{ html_table|safe }}
-    {% else %}
-        <p>No se encontraron resultados en la consulta.</p>
-    {% endif %}
-{% endblock %}
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
+
+    <div class="container mt-5 pt-5">
+        {% if html_table %}
+            {{ html_table|safe }}
+        {% else %}
+            <p>No se encontraron resultados en la consulta.</p>
+        {% endif %}
+    </div>
+
+    <!-- Modal de Edición Usuarios-->
+    <div class="modal fade" id="editUsuarioModal" tabindex="-1" aria-labelledby="editUsuarioModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editUsuarioModalLabel">Editar Usuario</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="/update_usuario" method="POST">
+                    <div class="modal-body">
+                        <input type="hidden" id="edit_usuario_id" name="id">
+                        <div class="form-group">
+                            <label for="edit_puesto">Puesto</label>
+                            <input type="text" class="form-control" id="edit_puesto_usuario" name="puesto">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_nombre1">Nombre 1</label>
+                            <input type="text" class="form-control" id="edit_nombre1_usuario" name="nombre1">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_nombre2">Nombre 2</label>
+                            <input type="text" class="form-control" id="edit_nombre2_usuario" name="nombre2">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_apellido1">Apellido 1</label>
+                            <input type="text" class="form-control" id="edit_apellido1_usuario" name="apellido1">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_apellido2">Apellido 2</label>
+                            <input type="text" class="form-control" id="edit_apellido2_usuario" name="apellido2">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_direccion">Dirección</label>
+                            <input type="text" class="form-control" id="edit_direccion_usuario" name="direccion">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_telefono">Teléfono</label>
+                            <input type="text" class="form-control" id="edit_telefono_usuario" name="telefono">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_correo_electronico">Correo Electrónico</label>
+                            <input type="email" class="form-control" id="edit_correo_electronico_usuario" name="correo_electronico">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Actualizar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Edición Refugios-->
+    <div class="modal fade" id="editRefugioModal" tabindex="-1" aria-labelledby="editRefugioModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editRefugioModalLabel">Editar Refugio</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="/update_refugio" method="POST">
+                    <div class="modal-body">
+                        <input type="hidden" id="edit_refugio_id" name="refugio_id">
+                        <div class="form-group">
+                            <label for="edit_nombre">Nombre</label>
+                            <input type="text" class="form-control" id="edit_nombre_refugio" name="nombre">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_direccion">Dirección</label>
+                            <input type="text" class="form-control" id="edit_direccion_refugio" name="direccion">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_ciudad">Ciudad</label>
+                            <input type="text" class="form-control" id="edit_ciudad_refugio" name="ciudad">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_pais">País</label>
+                            <input type="text" class="form-control" id="edit_pais_refugio" name="pais">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_codigo_postal">Código Postal</label>
+                            <input type="text" class="form-control" id="edit_codigo_postal_refugio" name="codigo_postal">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_correo_electronico">Correo Electrónico</label>
+                            <input type="email" class="form-control" id="edit_correo_electronico_refugio" name="correo_electronico">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_telefono">Teléfono</label>
+                            <input type="text" class="form-control" id="edit_telefono_refugio" name="telefono">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Actualizar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Edición Animales -->
+    <div class="modal fade" id="editAnimalModal" tabindex="-1" aria-labelledby="editAnimalModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editAnimalModalLabel">Editar Animal</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="/update_animal" method="POST">
+                    <div class="modal-body">
+                        <input type="hidden" id="edit_animal_id" name="animal_id">
+                        <div class="form-group">
+                            <label for="edit_nombre">Nombre</label>
+                            <input type="text" class="form-control" id="edit_nombre_animal" name="nombre">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_especie">Especie</label>
+                            <input type="text" class="form-control" id="edit_especie_animal" name="especie">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_raza">Raza</label>
+                            <input type="text" class="form-control" id="edit_raza_animal" name="raza">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_genero">Género</label>
+                            <input type="text" class="form-control" id="edit_genero_animal" name="genero">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_esterilizado">Esterilizado</label>
+                            <input type="text" class="form-control" id="edit_esterilizado_animal" name="esterilizado">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_ubicacion_actual">Ubicación Actual</label>
+                            <input type="text" class="form-control" id="edit_ubicacion_actual_animal" name="ubicacion_actual">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_propietario_id">Propietario ID</label>
+                            <input type="text" class="form-control" id="edit_propietario_id_animal" name="propietario_id">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_refugio_id">Refugio ID</label>
+                            <input type="text" class="form-control" id="edit_refugio_id_animal" name="refugio_id">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Actualizar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de Edición Veterinarios -->
+    <div class="modal fade" id="editVeterinarioModal" tabindex="-1" aria-labelledby="editVeterinarioModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editVeterinarioModalLabel">Editar Veterinario</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="/update_veterinario" method="POST">
+                    <div class="modal-body">
+                        <input type="hidden" id="edit_veterinario_id" name="veterinario_id">
+                        <div class="form-group">
+                            <label for="edit_nombre">Nombre</label>
+                            <input type="text" class="form-control" id="edit_nombre" name="nombre">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_especialidad">Especialidad</label>
+                            <input type="text" class="form-control" id="edit_especialidad" name="especialidad">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_telefono">Teléfono</label>
+                            <input type="text" class="form-control" id="edit_telefono" name="telefono">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_correo_electronico">Correo Electrónico</label>
+                            <input type="email" class="form-control" id="edit_correo_electronico" name="correo_electronico">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_direccion">Dirección</label>
+                            <input type="text" class="form-control" id="edit_direccion" name="direccion">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Actualizar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+
+    <script src="/static/js/tablas.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

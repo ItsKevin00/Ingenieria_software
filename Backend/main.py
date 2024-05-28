@@ -12,7 +12,7 @@ from functools import wraps
 import os
 
 
-app = Flask(__name__, template_folder="C:/Users/baril/Documents/9no Semestre Sistemas/Ingeniería de Software/Desarrollo/Ingenieria_software/Frontend/templates", static_folder='C:/Users/baril/Documents/9no Semestre Sistemas/Ingeniería de Software/Desarrollo/Ingenieria_software/Frontend/static')
+app = Flask(__name__, template_folder="C:/Users/baril/Documents/9no Semestre Sistemas/Ingeniería de Software/Ingenieria_software-1/Frontend/templates", static_folder='C:/Users/baril/Documents/9no Semestre Sistemas/Ingeniería de Software/Ingenieria_software-1/Frontend/static')
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:8080", "supports_credentials": True}})
 
 IMAGES_DIR = os.path.join(app.static_folder, 'img')
@@ -33,6 +33,230 @@ def test():
 @app.route("/apoyanos")
 def apoyanos():
     return render_template("About.html")
+
+@app.route("/tablas")
+def tablas():
+    titulo = "Administrar Tablas"
+    return render_template('tablas.html', titulo=titulo)
+
+# Función que recibe una consulta, la ejecuta y devuelve el resultado
+def get_results(query):
+    connection = pyodbc.connect(connection_string)
+    cursor = connection.cursor()
+    cursor.execute(query)
+    resultados = cursor.fetchall()
+    cursor.close()
+    connection.close()
+    return resultados
+
+# Ruta para administrar animales
+@app.route("/animales")
+def animales_tabla():
+    titulo = "Administrar Animales"
+    query = """
+        SELECT animal_id, nombre, especie, raza, genero, esterilizado, ubicacion_actual, propietario_id, refugio_id
+        FROM C##USER_DBA.Animales;
+    """
+    resultados = get_results(query)
+    # Construir la tabla HTML
+    headers = ["ID", "Nombre", "Especie", "Raza", "Género", "Esterilizado", "Ubicación", "Propietario", "Refugio"]
+    html_table = build_html_table(resultados, headers, "animales")
+    return render_template('tablas.html', titulo=titulo, html_table=html_table)
+
+# Ruta para administrar usuarios
+@app.route("/usuarios")
+def usuarios():
+    titulo = "Administrar Usuarios"
+    query = """
+        SELECT Usuario_id, Puesto, Nombre1, Nombre2, Apellido1, Apellido2, Direccion, Telefono, CorreoElectronico
+        FROM C##USER_DBA.Usuario;
+    """
+    resultados = get_results(query)
+    # Construir la tabla HTML
+    headers = ["ID", "Puesto", "Nombre1", "Nombre2", "Apellido1", "Apellido2", "Dirección", "Teléfono", "Correo Electrónico"]
+    html_table = build_html_table(resultados, headers, "usuarios")
+    return render_template('tablas.html', titulo=titulo, html_table=html_table)
+
+
+# Ruta para administrar refugios
+@app.route("/refugios")
+def refugios():
+    titulo = "Administrar Refugios"
+    query = """
+        SELECT refugio_id, nombre, direccion, ciudad, pais, codigo_postal, correo_electronico, telefono
+        FROM C##USER_DBA.Refugios;
+    """
+    resultados = get_results(query)
+    # Construir la tabla HTML
+    headers = ["ID", "Nombre", "Dirección", "Ciudad", "País", "Código Postal", "Correo Electrónico", "Teléfono"]
+    html_table = build_html_table(resultados, headers, "refugios")
+    return render_template('tablas.html', titulo=titulo, html_table=html_table)
+
+
+
+# Ruta para administrar veterinarios
+@app.route("/veterinarios")
+def veterinarios():
+    titulo = "Administrar Veterinarios"
+    query = """
+        SELECT veterinario_id, 
+        TRIM(Nombre || ' ' || Apellido) AS Nombre,
+        telefono, email
+        FROM C##USER_DBA.Veterinarios;
+    """
+    resultados = get_results(query)
+    # Construir la tabla HTML
+    headers = ["ID", "Nombre", "Teléfono", "Email"]
+    html_table = build_html_table(resultados, headers, "veterinarios")
+    return render_template('tablas.html', titulo=titulo, html_table=html_table)
+
+@app.route("/update_usuario", methods=["POST"])
+def update_usuario():
+    usuario_id = request.form["id"]
+    puesto = request.form["puesto"]
+    nombre1 = request.form["nombre1"]
+    nombre2 = request.form["nombre2"]
+    apellido1 = request.form["apellido1"]
+    apellido2 = request.form["apellido2"]
+    direccion = request.form["direccion"]
+    telefono = request.form["telefono"]
+    correo_electronico = request.form["correo_electronico"]
+
+    query = """
+        UPDATE C##USER_DBA.Usuario
+        SET Puesto = ?, Nombre1 = ?, Nombre2 = ?, Apellido1 = ?, Apellido2 = ?, Direccion = ?, Telefono = ?, CorreoElectronico = ?
+        WHERE Usuario_id = ?
+    """
+    connection = pyodbc.connect(connection_string)
+    cursor = connection.cursor()
+    cursor.execute(query, (puesto, nombre1, nombre2, apellido1, apellido2, direccion, telefono, correo_electronico, usuario_id))
+    connection.commit()
+    
+    return redirect("/usuarios")
+
+@app.route('/update_refugio', methods=['POST'])
+def update_refugio():
+    
+    refugio_id = request.form.get('refugio_id')
+    print("Este es el id: "+str(refugio_id))
+    refugio_id = int(float(refugio_id))
+    
+    nombre = request.form.get('nombre', '').encode('utf-8').decode('utf-8')
+    direccion = request.form.get('direccion', '').encode('utf-8').decode('utf-8')
+    ciudad = request.form.get('ciudad', '').encode('utf-8').decode('utf-8')
+    pais = request.form.get('pais', '').encode('utf-8').decode('utf-8')
+    codigo_postal = request.form.get('codigo_postal', '').encode('utf-8').decode('utf-8')
+    correo_electronico = request.form.get('correo_electronico', '').encode('utf-8').decode('utf-8')
+    telefono = request.form.get('telefono', '').encode('utf-8').decode('utf-8')
+
+    connection = pyodbc.connect(connection_string)
+    cursor = connection.cursor()
+    query = """
+    UPDATE C##USER_DBA.Refugios
+    SET nombre = ?, direccion = ?, ciudad = ?, pais = ?, codigo_postal = ?, correo_electronico = ?, telefono = ?
+    WHERE refugio_id = ?
+    """
+    cursor.execute(query, (nombre, direccion, ciudad, pais, codigo_postal, correo_electronico, telefono, refugio_id))
+    connection.commit()
+    cursor.close()
+    connection.close()
+    
+    return redirect('/refugios')
+
+@app.route('/update_animal', methods=['POST'])
+def update_animal():
+    try:
+        animal_id = request.form.get('animal_id')
+        
+        # if animal_id is None or not animal_id.replace('.', '', 1).isdigit():
+        #     return "Error: animal_id no es un número válido", 400
+        
+        animal_id = int(float(animal_id))
+        
+        nombre = request.form.get('nombre', '').encode('utf-8').decode('utf-8')
+        especie = request.form.get('especie', '').encode('utf-8').decode('utf-8')
+        raza = request.form.get('raza', '').encode('utf-8').decode('utf-8')
+        genero = request.form.get('genero', '').encode('utf-8').decode('utf-8')
+        esterilizado = request.form.get('esterilizado', '').encode('utf-8').decode('utf-8')
+        ubicacion_actual = request.form.get('ubicacion_actual', '').encode('utf-8').decode('utf-8')
+        propietario_id = request.form.get('propietario_id')
+        propietario_id = int(float(propietario_id))
+        refugio_id = request.form.get('refugio_id')
+        refugio_id = int(float(refugio_id))
+        
+        connection = pyodbc.connect(connection_string)
+        cursor = connection.cursor()
+        query = """
+        UPDATE C##USER_DBA.Animales
+        SET nombre = ?, especie = ?, raza = ?, genero = ?, esterilizado = ?, ubicacion_actual = ?, propietario_id = ?, refugio_id = ?
+        WHERE animal_id = ?
+        """
+        cursor.execute(query, (nombre, especie, raza, genero, esterilizado, ubicacion_actual, propietario_id, refugio_id, animal_id))
+        connection.commit()
+        cursor.close()
+        connection.close()
+        
+        return redirect('/animales')
+    except Exception as e:
+        print(f"Error: {str(e).encode('utf-8', 'replace').decode('utf-8')}")
+        return str(e), 500
+
+
+@app.route('/update_veterinario', methods=['POST'])
+def update_veterinario():
+    try:
+        veterinario_id = request.form.get('veterinario_id')
+        veterinario_id = int(float(veterinario_id))
+        
+        nombre = request.form.get('nombre', '').encode('utf-8').decode('utf-8')
+        especialidad = request.form.get('especialidad', '').encode('utf-8').decode('utf-8')
+        telefono = request.form.get('telefono', '').encode('utf-8').decode('utf-8')
+        email = request.form.get('email', '').encode('utf-8').decode('utf-8')
+
+        connection = pyodbc.connect(connection_string)
+        cursor = connection.cursor()
+        query = """
+        UPDATE C##USER_DBA.Veterinarios
+        SET nombre = ?, especialidad = ?, telefono = ?, email = ?
+        WHERE veterinario_id = ?
+        """
+        cursor.execute(query, (nombre, especialidad, telefono, email, veterinario_id))
+        connection.commit()
+        cursor.close()
+        connection.close()
+        
+        return redirect('/veterinarios')
+    except Exception as e:
+        print(f"Error: {e}")
+        return str(e), 500
+
+
+def build_html_table(data, headers, table_type):
+    html_table = "<table class='table'>"
+    html_table += "<thead class='thead-light'><tr>"
+    for header in headers:
+        html_table += f"<th>{header}</th>"
+    html_table += "<th>Acciones</th></tr></thead>"
+    html_table += "<tbody>"
+    for row in data:
+        html_table += "<tr>"
+        for i in range(len(headers)):
+            value = row[i] if i < len(row) and row[i] is not None else ''
+            html_table += f"<td>{value}</td>"
+        row_data = [str(cell) if cell is not None else '' for cell in row]
+        js_row_data = ', '.join([f'"{cell}"' for cell in row_data])
+        html_table += f"""
+            <td>
+                <button class='btn btn-outline-secondary' type='button' onclick='openEditModal("{table_type}", {js_row_data})'>Editar</button>
+                <form action='/Eliminar' method='POST' style='display:inline;'>
+                    <button class='btn btn-outline-danger' type='submit' name='eliminar' value='{row[0]}'>Eliminar</button>
+                </form>
+            </td>
+        """
+        html_table += "</tr>"
+    html_table += "</tbody></table>"
+    return html_table
+
 
 @app.route("/adopta")
 def adopta():
