@@ -30,7 +30,6 @@ def inicio():
 def test():
     tipo = request.args.get('tipo')
     return render_template('test.html', tipo=tipo)
-    # return render_template("test.html")
 
 @app.route("/apoyanos")
 def apoyanos():
@@ -188,10 +187,6 @@ def update_refugio():
 def update_animal():
     try:
         animal_id = request.form.get('animal_id')
-        
-        # if animal_id is None or not animal_id.replace('.', '', 1).isdigit():
-        #     return "Error: animal_id no es un número válido", 400
-        
         animal_id = int(float(animal_id))
         
         nombre = request.form.get('nombre', '').encode('utf-8').decode('utf-8')
