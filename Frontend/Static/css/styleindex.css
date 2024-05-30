@@ -294,3 +294,49 @@ body {
 .carousel-item img {
     object-fit: cover;
 }
+
+
+h2 {
+    text-align: center;
+    color: #333;
+}
+form {
+    display: flex;
+    flex-direction: column;
+}
+label {
+    margin-top: 10px;
+    font-weight: bold;
+}
+input, select, button {
+    margin-top: 5px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+button {
+    background-color: #157cdd;
+    color: #fff;
+    cursor: pointer;
+    border: none;
+    margin-top: 20px;
+}
+button:hover {
+    background-color: #1a00ac;
+}
+img {
+    margin-top: 20px;
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+.publicado-label {
+    display: inline-block;
+    width: auto;
+    margin-right: 10px;
+}
+input[type="checkbox"] {
+    vertical-align: middle;
+}
