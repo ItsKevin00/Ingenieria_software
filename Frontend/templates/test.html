@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/styleindex.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <title>Registro de Animales</title>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <title>Registro de {{ tipo }}</title>
     <style>
         h2 {
             text-align: center;
@@ -49,98 +51,22 @@
             width: auto;
             margin-right: 10px;
         }
-
         input[type="checkbox"] {
             vertical-align: middle;
         }
     </style>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('#refugio_id').select2({
-                placeholder: 'Buscar refugio...',
-                ajax: {
-                    url: '/api/refugios',
-                    dataType: 'json',
-                    delay: 250,
-                    data: function (params) {
-                        return {
-                            search: params.term
-                        };
-                    },
-                    processResults: function (data) {
-                        return {
-                            results: data.map(function(refugio) {
-                                return { id: refugio.id, text: refugio.nombre };
-                            })
-                        };
-                    },
-                    cache: true
-                }
-            });
-
-            $('#propietario_id').select2({
-                placeholder: 'Buscar propietario...',
-                ajax: {
-                    url: '/api/propietarios',
-                    dataType: 'json',
-                    delay: 250,
-                    data: function (params) {
-                        return {
-                            search: params.term
-                        };
-                    },
-                    processResults: function (data) {
-                        return {
-                            results: data.map(function(propietario) {
-                                return { id: propietario.id, text: propietario.nombre };
-                            })
-                        };
-                    },
-                    cache: true
-                }
-            });
-        });
-
-        function subirDatos() {
-            var formData = new FormData(document.getElementById('formulario-animal'));
-
-            formData.append('publicado', document.getElementById('publicado').checked ? 'Y' : 'N');
-
-            fetch("/api/animales", {
-                method: "POST",
-                body: formData
-            })
-            .then(response => {
-                if (response.ok) {
-                    var archivo = document.getElementById('archivo').files[0];
-                    if (archivo) {
-                        document.getElementById('imagen').src = URL.createObjectURL(archivo);
-                    }
-                    return response.json();
-                } else {
-                    throw new Error('Error en la solicitud.');
-                }
-            })
-            .then(data => {
-                console.log(data);
-                window.location.reload();
-            })
-            .catch(error => {
-                console.error("Error al realizar la solicitud:", error);
-            });
-        }
-    </script>
 </head>
 <body>
     <nav class="navbar navbar-light fixed-top navbar-expand-lg">
         <div class="container">
-            <a class="navbar-brand" href="#">No se que poner xD</a>
+            <a class="navbar-brand" href="#">Patitas en Adopción</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarOpen">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarOpen">
+                <div id="navbarAdmin" class="collapse navbar-collapse">
+                    <!-- Este será el menú de administrador, inicialmente vacío -->
+                </div>
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="/index">Home</a>
@@ -152,9 +78,6 @@
                         <a class="nav-link" href="/adopta">Adopta</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Veterinario</a>
-                    </li>
-                    <li class="nav-item">
                         <a id="logoutButton" class="nav-link" href="/">Cerrar sesión</a>
                     </li>
                 </ul>
@@ -162,57 +85,135 @@
         </div>
     </nav>
     <div class="container mt-5 pt-5">
-        <h2>Registro de Animales</h2>
-        <form id="formulario-animal" enctype="multipart/form-data" style="margin-bottom: 20px;">
-            <label for="nombre">Nombre</label>
-            <input type="text" id="nombre" name="nombre" maxlength="50" required="1">
+        <h2>Registro de {{ tipo | capitalize }}</h2>
+        <form id="formulario-{{ tipo }}" enctype="multipart/form-data" style="margin-bottom: 20px;">
+            {% if tipo == 'animal' %}
+                <label for="nombre_animal">Nombre</label>
+                <input type="text" id="nombre_animal" name="nombre" maxlength="50" required>
 
-            <label for="especie">Especie</label>
-            <input type="text" id="especie" name="especie" maxlength="50" required="1">
+                <label for="especie_animal">Especie</label>
+                <input type="text" id="especie_animal" name="especie" maxlength="50" required>
 
-            <label for="raza">Raza</label>
-            <input type="text" id="raza" name="raza" maxlength="50" required="1">
+                <label for="raza_animal">Raza</label>
+                <input type="text" id="raza_animal" name="raza" maxlength="50" required>
 
-            <label for="genero">Género</label>
-            <select id="genero" name="genero" required="1">
-                <option value="macho">Macho</option>
-                <option value="hembra">Hembra</option>
-            </select>
+                <label for="genero_animal">Género</label>
+                <select id="genero_animal" name="genero" required>
+                    <option value="macho">Macho</option>
+                    <option value="hembra">Hembra</option>
+                </select>
 
-            <label for="esterilizado">Esterilizado (S/N)</label>
-            <select id="esterilizado" name="esterilizado" required="1">
-                <option value="S">Sí</option>
-                <option value="N">No</option>
-            </select>
+                <label for="esterilizado_animal">Esterilizado (S/N)</label>
+                <select id="esterilizado_animal" name="esterilizado" required>
+                    <option value="S">Sí</option>
+                    <option value="N">No</option>
+                </select>
 
-            <label for="ubicacion_actual">Ubicación Actual</label>
-            <input type="text" id="ubicacion_actual" name="ubicacion_actual" maxlength="100" required="1">
+                <label for="ubicacion_actual_animal">Ubicación Actual</label>
+                <input type="text" id="ubicacion_actual_animal" name="ubicacion_actual" maxlength="100" required>
 
-            <label for="refugio_id">Refugio</label>
-            <select id="refugio_id" name="refugio_id" required="1"></select>
+                <label for="refugio_id_animal">Refugio</label>
+                <select id="refugio_id_animal" name="refugio_id" required></select>
 
-            <label for="propietario_id">Propietario</label>
-            <select id="propietario_id" name="propietario_id" required="1"></select>
+                <label for="propietario_id_animal">Propietario</label>
+                <select id="propietario_id_animal" name="propietario_id" required></select>
 
-            <label for="edad">Edad</label>
-            <input type="number" id="edad" name="edad" required="1">
+                <label for="edad_animal">Edad</label>
+                <input type="number" id="edad_animal" name="edad" required>
 
-            <label for="tamanio">Tamaño</label>
-            <select id="tamanio" name="tamanio" required="1">
-                <option value="grande">Grande</option>
-                <option value="mediano">Mediano</option>
-                <option value="pequeño">Pequeño</option>
-            </select>
+                <label for="tamanio_animal">Tamaño</label>
+                <select id="tamanio_animal" name="tamanio" required>
+                    <option value="grande">Grande</option>
+                    <option value="mediano">Mediano</option>
+                    <option value="pequeño">Pequeño</option>
+                </select>
 
-            <label for="publicado" class="publicado-label">Publicado</label>
-            <input type="checkbox" id="publicado" name="publicado" required="1">
+                <label for="publicado_animal" class="publicado-label">Publicado</label>
+                <input type="checkbox" id="publicado_animal" name="publicado">
 
-            <label for="archivo">Imagen</label>
-            <input type="file" id="archivo" name="archivo" accept="image/*" required>
+                <label for="archivo_animal">Imagen</label>
+                <input type="file" id="archivo_animal" name="archivo" accept="image/*" required>
+                
+                <div>
+                    <img id="imagen" src="" alt="Imagen de previsualización" invisible="1">
+                </div>
 
-            <button type="button" onclick="subirDatos()">Registrar Animal</button>
+            {% elif tipo == 'usuario' %}
+                <label for="puesto_usuario">Puesto</label>
+                <input type="text" id="puesto_usuario" name="puesto" maxlength="50" required>
+
+                <label for="nombre1_usuario">Primer Nombre</label>
+                <input type="text" id="nombre1_usuario" name="nombre1" maxlength="50" required>
+
+                <label for="nombre2_usuario">Segundo Nombre</label>
+                <input type="text" id="nombre2_usuario" name="nombre2" maxlength="50" required>
+
+                <label for="apellido1_usuario">Primer Apellido</label>
+                <input type="text" id="apellido_usuario1" name="apellido1" maxlength="50" required>
+
+                <label for="apellido2_usuario">Segundo Apellido</label>
+                <input type="text" id="apellido_usuario2" name="apellido2" maxlength="50" required>
+
+                <label for="telefono_usuario">Teléfono</label>
+                <input type="tel" id="telefono_usuario" name="telefono" maxlength="15" required>
+                
+                <label for="direccion_usuario">Dirección</label>
+                <input type="text" id="direccion_usuario" name="direccion" maxlength="100" required>
+
+                <label for="email_usuario">Correo Electrónico</label>
+                <input type="email" id="email_usuario" name="email" maxlength="100" required>
+
+                <label for="contraseña_usuario">Contraseña</label>
+                <input type="text" id="contraseña_usuario" name="contraseña_usuario" maxlength="100" required>
+
+            {% elif tipo == 'refugio' %}
+                <label for="nombre_refugio">Nombre del Refugio</label>
+                <input type="text" id="nombre_refugio" name="nombre" maxlength="50" required>
+
+                <label for="direccion_refugio">Dirección</label>
+                <input type="text" id="direccion_refugio" name="direccion" maxlength="100" required>
+
+                <label for="ciudad_refugio">Ciudad</label>
+                <input type="text" id="ciudad_refugio" name="ciudad_refugio" maxlength="100" required>
+
+                <label for="pais_refugio">Ciudad</label>
+                <input type="text" id="pais_refugio" name="pais_refugio" maxlength="100" required>
+
+                <label for="postal_refugio">Ciudad</label>
+                <input type="text" id="postal_refugio" name="postal_refugio" maxlength="100" required>
+
+                <label for="telefono_refugio">Teléfono</label>
+                <input type="tel" id="telefono_refugio" name="telefono" maxlength="15" required>
+
+                <label for="email_refugio">Correo Electrónico</label>
+                <input type="email" id="email_refugio" name="email_refugio" maxlength="100" required>
+
+            {% elif tipo == 'veterinario' %}
+                <label for="nombre_veterinario">Nombre</label>
+                <input type="text" id="nombre_veterinario" name="nombre" maxlength="50" required>
+
+                <label for="apellido_veterinario">Apellido</label>
+                <input type="text" id="apellido_veterinario" name="apellido" maxlength="50" required>
+                
+                <label for="direccion_veterinario">Dirección</label>
+                <input type="text" id="direccion_veterinario" name="direccion" maxlength="100" required>
+
+                <label for="email_veterinario">Correo Electrónico</label>
+                <input type="email" id="email_veterinario" name="email" maxlength="100" required>
+
+                <label for="telefono_veterinario">Teléfono</label>
+                <input type="tel" id="telefono_veterinario" name="telefono" maxlength="15" required>
+
+            {% else %}
+                <p>Tipo de entidad no reconocido.</p>
+            {% endif %}
+            <button type="button" onclick="subirDatos('{{ tipo }}')">Registrar {{ tipo }}</button>
         </form>
-        <!-- <img id="imagen" src="" alt="Imagen del animal"> -->
     </div>
+
+    <script src="/static/js/crear.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 </body>
 </html>

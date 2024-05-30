@@ -5,6 +5,9 @@ document.addEventListener("DOMContentLoaded", function() {
         window.location.href = "/";
     }
 });
+function redirigirCrear(tipo) {
+    window.location.href = '/crear?tipo=' + tipo;
+}
 
 document.addEventListener("DOMContentLoaded", function() {
     const rol = localStorage.getItem('rol');
@@ -60,6 +63,7 @@ function openEditModal(type, ...args) {
         document.getElementById('edit_ubicacion_actual_animal').value = args[6] || '';
         document.getElementById('edit_propietario_id_animal').value = args[7] || '';
         document.getElementById('edit_refugio_id_animal').value = args[8] || '';
+        document.getElementById('edit_publicado_animal').value = args[9] || '';
         $('#editAnimalModal').modal('show');
     } else if (type === "veterinarios") {
         document.getElementById('edit_veterinario_id').value = args[0] || '';

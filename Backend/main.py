@@ -26,9 +26,11 @@ def index():
 def inicio():
     return render_template("index.html")
 
-@app.route("/test")
+@app.route("/crear")
 def test():
-    return render_template("test.html")
+    tipo = request.args.get('tipo')
+    return render_template('test.html', tipo=tipo)
+    # return render_template("test.html")
 
 @app.route("/apoyanos")
 def apoyanos():
@@ -50,18 +52,49 @@ def get_results(query):
     return resultados
 
 # Ruta para administrar animales
+# @app.route("/animales")
+# def animales_tabla():
+#     titulo = "Administrar Animales"
+#     query = """
+#         SELECT animal_id, nombre, especie, raza, genero, esterilizado, ubicacion_actual, propietario_id, refugio_id, publicado
+#         FROM C##USER_DBA.Animales;
+#     """
+#     resultados = get_results(query)
+#     # Construir la tabla HTML
+#     headers = ["ID", "Nombre", "Especie", "Raza", "Género", "Esterilizado", "Ubicación", "Propietario", "Refugio", "Publicado"]
+#     tipo = "animales"
+#     html_table = build_html_table(resultados, headers, "animales")
+#     return render_template('tablas.html', titulo=titulo, html_table=html_table, tipo=tipo)
+
 @app.route("/animales")
 def animales_tabla():
     titulo = "Administrar Animales"
     query = """
-        SELECT animal_id, nombre, especie, raza, genero, esterilizado, ubicacion_actual, propietario_id, refugio_id
-        FROM C##USER_DBA.Animales;
+        SELECT 
+            a.animal_id, 
+            a.nombre, 
+            a.especie, 
+            a.raza, 
+            a.genero, 
+            a.esterilizado, 
+            a.ubicacion_actual, 
+            p.nombre AS propietario_nombre, 
+            r.nombre AS refugio_nombre, 
+            a.publicado
+        FROM 
+            C##USER_DBA.Animales a
+        LEFT JOIN 
+            C##USER_DBA.Propietarios p ON a.propietario_id = p.propietario_id
+        LEFT JOIN 
+            C##USER_DBA.Refugios r ON a.refugio_id = r.refugio_id;
     """
     resultados = get_results(query)
     # Construir la tabla HTML
-    headers = ["ID", "Nombre", "Especie", "Raza", "Género", "Esterilizado", "Ubicación", "Propietario", "Refugio"]
+    headers = ["ID", "Nombre", "Especie", "Raza", "Género", "Esterilizado", "Ubicación", "Propietario", "Refugio", "Publicado"]
+    tipo = "animales"
     html_table = build_html_table(resultados, headers, "animales")
-    return render_template('tablas.html', titulo=titulo, html_table=html_table)
+    return render_template('tablas.html', titulo=titulo, html_table=html_table, tipo=tipo)
+
 
 # Ruta para administrar usuarios
 @app.route("/usuarios")
@@ -74,8 +107,9 @@ def usuarios():
     resultados = get_results(query)
     # Construir la tabla HTML
     headers = ["ID", "Puesto", "Nombre1", "Nombre2", "Apellido1", "Apellido2", "Dirección", "Teléfono", "Correo Electrónico"]
+    tipo = "usuarios"
     html_table = build_html_table(resultados, headers, "usuarios")
-    return render_template('tablas.html', titulo=titulo, html_table=html_table)
+    return render_template('tablas.html', titulo=titulo, html_table=html_table, tipo=tipo)
 
 
 # Ruta para administrar refugios
@@ -89,8 +123,9 @@ def refugios():
     resultados = get_results(query)
     # Construir la tabla HTML
     headers = ["ID", "Nombre", "Dirección", "Ciudad", "País", "Código Postal", "Correo Electrónico", "Teléfono"]
+    tipo = "refugios"
     html_table = build_html_table(resultados, headers, "refugios")
-    return render_template('tablas.html', titulo=titulo, html_table=html_table)
+    return render_template('tablas.html', titulo=titulo, html_table=html_table, tipo=tipo)
 
 
 
@@ -107,8 +142,9 @@ def veterinarios():
     resultados = get_results(query)
     # Construir la tabla HTML
     headers = ["ID", "Nombre", "Teléfono", "Email"]
+    tipo= "veterinarios"
     html_table = build_html_table(resultados, headers, "veterinarios")
-    return render_template('tablas.html', titulo=titulo, html_table=html_table)
+    return render_template('tablas.html', titulo=titulo, html_table=html_table, tipo=tipo)
 
 @app.route("/update_usuario", methods=["POST"])
 def update_usuario():
@@ -183,15 +219,23 @@ def update_animal():
         propietario_id = int(float(propietario_id))
         refugio_id = request.form.get('refugio_id')
         refugio_id = int(float(refugio_id))
+        publicado = request.form.get('edit_publicado', False)
+        publicado = int(publicado)
+        if publicado == 1:
+            publicado = True
+        elif publicado == 0:
+            publicado = False
+        else:
+            publicado = False
         
         connection = pyodbc.connect(connection_string)
         cursor = connection.cursor()
         query = """
         UPDATE C##USER_DBA.Animales
-        SET nombre = ?, especie = ?, raza = ?, genero = ?, esterilizado = ?, ubicacion_actual = ?, propietario_id = ?, refugio_id = ?
+        SET nombre = ?, especie = ?, raza = ?, genero = ?, esterilizado = ?, ubicacion_actual = ?, propietario_id = ?, refugio_id = ?, publicado = ?
         WHERE animal_id = ?
         """
-        cursor.execute(query, (nombre, especie, raza, genero, esterilizado, ubicacion_actual, propietario_id, refugio_id, animal_id))
+        cursor.execute(query, (nombre, especie, raza, genero, esterilizado, ubicacion_actual, propietario_id, refugio_id, publicado, animal_id))
         connection.commit()
         cursor.close()
         connection.close()
@@ -232,7 +276,7 @@ def update_veterinario():
 
 
 def build_html_table(data, headers, table_type):
-    html_table = "<table class='table'>"
+    html_table = "<table  class='dynamic-table'>"
     html_table += "<thead class='thead-light'><tr>"
     for header in headers:
         html_table += f"<th>{header}</th>"
@@ -247,9 +291,9 @@ def build_html_table(data, headers, table_type):
         js_row_data = ', '.join([f'"{cell}"' for cell in row_data])
         html_table += f"""
             <td>
-                <button class='btn btn-outline-secondary' type='button' onclick='openEditModal("{table_type}", {js_row_data})'>Editar</button>
+                <button class='btn-edit' type='button' onclick='openEditModal("{table_type}", {js_row_data})'>Editar</button>
                 <form action='/Eliminar' method='POST' style='display:inline;'>
-                    <button class='btn btn-outline-danger' type='submit' name='eliminar' value='{row[0]}'>Eliminar</button>
+                    <button class='btn-delete' type='submit' name='eliminar' value='{row[0]}'>Eliminar</button>
                 </form>
             </td>
         """

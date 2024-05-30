@@ -1,6 +1,102 @@
+/* Contenedor principal para que ocupe todo el ancho */
+.container-table {
+    width: 100%;
+    padding: 20px;
+}
+/* Estilos generales para todos los modales */
+.modal-content {
+    background-color: #0A2647; /* Fondo del modal */
+    border-radius: 10px; /* Bordes redondeados */
+    border: none; /* Sin borde */
+    color: #ffffff; /* Color del texto */
+}
+
+/* Estilo para el encabezado del modal */
+.modal-header {
+    background-color: #144272; /* Color de encabezado */
+    color: #ffffff; /* Texto blanco */
+    border-bottom: none; /* Sin borde inferior */
+    border-top-left-radius: 10px; /* Redondeo de esquinas */
+    border-top-right-radius: 10px; /* Redondeo de esquinas */
+}
+
+/* Estilo para el botón de cierre del modal */
+.modal-header .close {
+    color: #ffffff; /* Color del ícono de cierre */
+    opacity: 1;
+}
+
+/* Estilo para el cuerpo del modal */
+.modal-body {
+    padding: 20px; /* Espaciado interno */
+    background-color: #205295; /* Fondo del cuerpo del modal */
+    color: #ffffff; /* Color del texto */
+}
+
+/* Estilo para el pie del modal */
+.modal-footer {
+    background-color: #144272; /* Fondo del pie del modal */
+    border-top: none; /* Sin borde superior */
+    border-bottom-left-radius: 10px; /* Redondeo de esquinas */
+    border-bottom-right-radius: 10px; /* Redondeo de esquinas */
+}
+
+/* Estilo para los botones del modal */
+.modal-footer .btn-secondary {
+    background-color: #2C74B3; /* Color de botón secundario */
+    border: none; /* Sin borde */
+    color: #ffffff; /* Color del texto */
+}
+
+.modal-footer .btn-primary {
+    background-color: #0A2647; /* Color de botón principal */
+    border: none; /* Sin borde */
+    color: #ffffff; /* Color del texto */
+}
+
+/* Estilo para los campos del formulario */
+.form-control {
+    border-radius: 5px; /* Bordes redondeados */
+    border: 1px solid #bdc3c7; /* Borde del campo */
+    background-color: #ffffff; /* Fondo del campo */
+    color: #0A2647; /* Color del texto */
+}
+
+/* Estilo para las etiquetas */
+.form-group label {
+    color: #ffffff; /* Color de texto blanco en los modales */
+    font-weight: bold; /* Negrita */
+}
+
+/* Estilos personalizados para el botón */
+.custom-button {
+    background-color: #144272; /* Color de fondo */
+    color: #ffffff; /* Color del texto */
+    border: none; /* Sin borde */
+    padding: 10px 20px; /* Relleno */
+    font-size: 18px; /* Tamaño de fuente */
+    border-radius: 5px; /* Bordes redondeados */
+    cursor: pointer; /* Manita en el cursor */
+    transition: background-color 0.3s, transform 0.3s; /* Transiciones para suavizar cambios */
+}
+
+.custom-button:hover {
+    background-color: #205295; /* Color de fondo más claro al pasar el mouse */
+    transform: scale(1.05); /* Aumentar ligeramente el tamaño al pasar el mouse */
+}
+
+.custom-button:active {
+    background-color: #144272; /* Color de fondo aún más oscuro al hacer clic */
+    transform: scale(1); /* Restaurar tamaño al hacer clic */
+}
+
+.custom-button i {
+    margin-right: 10px; /* Espacio entre el icono y el texto */
+}
+
 /* Fondo de la página */
 body {
-    background-color: #e6e6fa; /* Morado claro */
+    background-color: #2C74B3; /* Azul claro */
 }
 
 /* Estilo para las tarjetas */
@@ -14,15 +110,98 @@ body {
 }
 
 .navbar {
-    background-color: #8a2be2; /* Fondo morado para la barra de navegación */
+    background-color: #0A2647; /* Fondo azul oscuro para la barra de navegación */
 }
 
 .navbar-brand, .nav-link {
-    color: white !important; /* Texto blanco para el brand y los links */
+    color: #ffffff !important; /* Texto blanco para el brand y los links */
 }
 
 .nav-link:hover {
-    color: #dda0dd !important; /* Texto color lavanda al pasar el ratón */
+    color: #2C74B3 !important; /* Texto color azul claro al pasar el ratón */
+}
+/* Estilo para la tabla dinámica */
+/* Estilo para la tabla dinámica */
+.dynamic-table {
+    width: 100%; /* Asegura que la tabla ocupe todo el ancho disponible */
+    border-collapse: collapse; /* Elimina espacios entre celdas */
+    transition: all 0.3s ease; /* Transición suave para toda la tabla */
+}
+
+.dynamic-table th, .dynamic-table td {
+    padding: 3px; /* Espaciado interno en celdas */
+    border: 1px solid #bdc3c7; /* Borde de celdas */
+    text-align: left; /* Alineación de texto a la izquierda */
+    transition: background-color 0.3s, box-shadow 0.3s; /* Transición suave para cambios de fondo y sombra */
+}
+
+.dynamic-table th {
+    background-color: #144272; /* Fondo para encabezados */
+    color: #ffffff; /* Color de texto en encabezados */
+}
+
+.dynamic-table tr:nth-child(even) {
+    background-color: #f2f2f2; /* Fondo para filas pares */
+}
+
+.dynamic-table tr:hover {
+    background-color: #205295; /* Fondo al pasar el ratón sobre la fila */
+    color: #ffffff; /* Color de texto al pasar el ratón */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra al pasar el ratón */
+    transform: scale(1.02); /* Aumentar ligeramente el tamaño al pasar el ratón */
+}
+
+.dynamic-table td:hover {
+    background-color: #2C74B3; /* Fondo al pasar el ratón sobre la celda */
+    color: #ffffff; /* Color de texto al pasar el ratón sobre la celda */
+}
+
+/* Adicional para mejorar la accesibilidad */
+.dynamic-table tr:focus-within {
+    outline: 2px solid #2C74B3; /* Borde para la fila enfocada */
+}
+/* Botón de editar */
+.btn-edit {
+    background-color: #2C74B3; /* Color de fondo */
+    color: #ffffff; /* Color del texto */
+    border: none; /* Sin borde */
+    padding: 8px 12px; /* Espaciado interno */
+    font-size: 14px; /* Tamaño de fuente */
+    border-radius: 5px; /* Bordes redondeados */
+    cursor: pointer; /* Manita en el cursor */
+    transition: background-color 0.3s, transform 0.3s; /* Transiciones para suavizar cambios */
+}
+
+.btn-edit:hover {
+    background-color: #205295; /* Color de fondo más oscuro al pasar el mouse */
+    transform: scale(1.05); /* Aumentar ligeramente el tamaño al pasar el mouse */
+}
+
+.btn-edit:active {
+    background-color: #144272; /* Color de fondo aún más oscuro al hacer clic */
+    transform: scale(1); /* Restaurar tamaño al hacer clic */
+}
+
+/* Botón de eliminar */
+.btn-delete {
+    background-color: #FF4B4B; /* Color de fondo */
+    color: #ffffff; /* Color del texto */
+    border: none; /* Sin borde */
+    padding: 8px 12px; /* Espaciado interno */
+    font-size: 14px; /* Tamaño de fuente */
+    border-radius: 5px; /* Bordes redondeados */
+    cursor: pointer; /* Manita en el cursor */
+    transition: background-color 0.3s, transform 0.3s; /* Transiciones para suavizar cambios */
+}
+
+.btn-delete:hover {
+    background-color: #E33E3E; /* Color de fondo más oscuro al pasar el mouse */
+    transform: scale(1.05); /* Aumentar ligeramente el tamaño al pasar el mouse */
+}
+
+.btn-delete:active {
+    background-color: #C93030; /* Color de fondo aún más oscuro al hacer clic */
+    transform: scale(1); /* Restaurar tamaño al hacer clic */
 }
 
 /* Ajuste del espaciado de la tarjeta */
@@ -42,25 +221,25 @@ body {
     background-color: #f4f4f4;
 }
 .support-section {
-    background: url('path-to-your-image.jpg') no-repeat center center/cover;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: url('/static/img/fondo1.jpg') no-repeat center center fixed;
+    background-size: cover;
+}
+
+.support-content {
     color: #fff;
     padding: 50px 20px;
     text-align: center;
     position: relative;
-}
-.support-section::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 1;
+    max-width: 1200px;
 }
-.support-content {
-    position: relative;
-    z-index: 2;
+
+.support-option {
+    cursor: pointer;
 }
 .support-content h1 {
     font-size: 3em;
@@ -108,3 +287,10 @@ body {
     font-size: 1em;
 }
 
+.carousel, .carousel-inner, .carousel-item, .carousel-item img {
+    height: 100%;
+}
+
+.carousel-item img {
+    object-fit: cover;
+}

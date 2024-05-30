@@ -50,7 +50,33 @@ document.addEventListener("DOMContentLoaded", function() {
     if (!token && window.location.pathname !== '/') {
         window.location.href = "/";
     }
+// });
+// document.addEventListener("DOMContentLoaded", function() {
+    const rol = localStorage.getItem('rol');
+    if (rol === "Administrador") {
+        const navbarAdmin = document.getElementById("navbarAdmin");
+        if (navbarAdmin) {
+            navbarAdmin.innerHTML = `
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="Administrar-menu" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Administrar
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="Administrar-menu">
+                            <a class="dropdown-item" href="/animales">Animales</a>
+                            <a class="dropdown-item" href="/usuarios">Usuarios</a>
+                            <a class="dropdown-item" href="/veterinarios">Veterinarios</a>
+                            <a class="dropdown-item" href="/refugios">Refugios</a>
+                        </div>
+                    </li>
+                </ul>
+            `;
+        } else {
+            console.error("Elemento navbarAdmin no encontrado.");
+        }
+    }
 });
+
 
 //Función para obtener los datos de inicio de sesión
 document.getElementById("loginForm").addEventListener("submit", function(event) {
@@ -77,16 +103,28 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
     .then(data => {
         localStorage.setItem('token', data.token);
         localStorage.setItem('rol', data.rol);
-        // if (data.rol === "Administrador") {
-        //     const navbarAdmin = document.getElementById("navbarAdmin");
-        //     navbarAdmin.innerHTML = `
-        //         <ul class="navbar-nav ml-auto">
-        //             <li class="nav-item">
-        //                 <a class="nav-link" href="/administrar">Administrar</a>
-        //             </li>
-        //         </ul>
-        //     `;
-        // }
+        if (data.rol === "Administrador") {
+            const navbarAdmin = document.getElementById("navbarAdmin");
+            if (navbarAdmin) {
+                navbarAdmin.innerHTML = `
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="Administrar-menu" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Administrar
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="Administrar-menu">
+                                <a class="dropdown-item" href="/animales">Animales</a>
+                                <a class="dropdown-item" href="/usuarios">Usuarios</a>
+                                <a class="dropdown-item" href="/veterinarios">Veterinarios</a>
+                                <a class="dropdown-item" href="/refugios">Refugios</a>
+                            </div>
+                        </li>
+                    </ul>
+                `;
+            } else {
+                console.error("Elemento navbarAdmin no encontrado.");
+            }
+        }
         window.location.href = "/index";  // Redirigir a la página de inicio si existe el token
     })
     .catch(error => {
