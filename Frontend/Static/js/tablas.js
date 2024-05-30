@@ -75,3 +75,29 @@ function openEditModal(type, ...args) {
         $('#editVeterinarioModal').modal('show');
     }
 }
+
+function deleteRecord(tableType, id) {
+    var apiUrl = '/api/eliminar/' + tableType + '/' + id;
+
+    fetch(apiUrl, {
+        method: 'DELETE'
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            return response.json().then(errorData => {
+                throw new Error(errorData.message || 'Error en la solicitud.');
+            });
+        }
+    })
+    .then(data => {
+        console.log(data);
+        alert(data.message);
+        window.location.reload();
+    })
+    .catch(error => {
+        console.error('Error al realizar la solicitud:', error);
+        alert('Error al realizar la solicitud: ' + error.message);
+    });
+}

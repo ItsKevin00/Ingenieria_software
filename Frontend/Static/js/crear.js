@@ -93,6 +93,9 @@ function subirDatos(tipo) {
                 }
                 window.location.reload();
             }
+            else {
+                window.location.reload();
+            }
             return response.json();
         } else {
             throw new Error('Error en la solicitud.');

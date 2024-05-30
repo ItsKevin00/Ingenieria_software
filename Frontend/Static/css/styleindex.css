@@ -99,15 +99,19 @@ body {
     background-color: #2C74B3; /* Azul claro */
 }
 
-/* Estilo para las tarjetas */
 .card {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra alrededor de las tarjetas */
-    transition: transform 0.2s; /* Transición suave al pasar el ratón */
+    background-color: #f9f9f9; /* Cambio de color de fondo */
+    color: #333333; /* Color del texto */
+    border-radius: 10px; /* Esquinas redondeadas */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Sombra más pronunciada */
+    transition: transform 0.2s, box-shadow 0.2s; /* Añadir transición a la sombra */
 }
 
 .card:hover {
     transform: scale(1.05); /* Efecto de agrandar la tarjeta al pasar el ratón */
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.4); /* Sombras más pronunciadas al pasar el ratón */
 }
+
 
 .navbar {
     background-color: #0A2647; /* Fondo azul oscuro para la barra de navegación */
@@ -339,4 +343,36 @@ img {
 }
 input[type="checkbox"] {
     vertical-align: middle;
+}
+
+
+body {
+    background-color: #f8f9fa; /* Fondo claro */
+    font-family: Arial, sans-serif; /* Cambiar la fuente si es necesario */
+}
+
+.container-table {
+    padding: 20px;
+    background: #ffffff; /* Fondo blanco para el contenedor de la tabla */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil para el contenedor */
+    border-radius: 8px; /* Esquinas redondeadas para el contenedor */
+}
+
+.custom-button {
+    background-color: #007bff; /* Color de fondo del botón */
+    color: #ffffff; /* Color del texto del botón */
+    border: none;
+    padding: 10px 20px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.custom-button:hover {
+    background-color: #0056b3; /* Color de fondo del botón al pasar el ratón */
+}
+
+
+body {
+    background: radial-gradient(circle, #000113c7, #000327);
 }

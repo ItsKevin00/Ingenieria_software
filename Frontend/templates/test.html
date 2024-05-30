@@ -8,8 +8,13 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <title>Registro de {{ tipo }}</title>
+    <title style="color: #ffffff">Registro de {{ tipo }}</title>
 </head>
+<style>
+    body {  
+        color: #ffffff;
+    }
+</style>
 <body>
     <nav class="navbar navbar-light fixed-top navbar-expand-lg">
         <div class="container">
@@ -130,10 +135,10 @@
                 <label for="ciudad_refugio">Ciudad</label>
                 <input type="text" id="ciudad_refugio" name="ciudad_refugio" maxlength="100" required>
 
-                <label for="pais_refugio">Ciudad</label>
+                <label for="pais_refugio">País</label>
                 <input type="text" id="pais_refugio" name="pais_refugio" maxlength="100" required>
 
-                <label for="postal_refugio">Ciudad</label>
+                <label for="postal_refugio">Código Postal</label>
                 <input type="text" id="postal_refugio" name="postal_refugio" maxlength="100" required>
 
                 <label for="telefono_refugio">Teléfono</label>

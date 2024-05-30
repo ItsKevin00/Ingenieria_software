@@ -51,21 +51,6 @@ def get_results(query):
     connection.close()
     return resultados
 
-# Ruta para administrar animales
-# @app.route("/animales")
-# def animales_tabla():
-#     titulo = "Administrar Animales"
-#     query = """
-#         SELECT animal_id, nombre, especie, raza, genero, esterilizado, ubicacion_actual, propietario_id, refugio_id, publicado
-#         FROM C##USER_DBA.Animales;
-#     """
-#     resultados = get_results(query)
-#     # Construir la tabla HTML
-#     headers = ["ID", "Nombre", "Especie", "Raza", "Género", "Esterilizado", "Ubicación", "Propietario", "Refugio", "Publicado"]
-#     tipo = "animales"
-#     html_table = build_html_table(resultados, headers, "animales")
-#     return render_template('tablas.html', titulo=titulo, html_table=html_table, tipo=tipo)
-
 @app.route("/animales")
 def animales_tabla():
     titulo = "Administrar Animales"
@@ -293,7 +278,7 @@ def build_html_table(data, headers, table_type):
             <td>
                 <button class='btn-edit' type='button' onclick='openEditModal("{table_type}", {js_row_data})'>Editar</button>
                 <form action='/Eliminar' method='POST' style='display:inline;'>
-                    <button class='btn-delete' type='submit' name='eliminar' value='{row[0]}'>Eliminar</button>
+                    <button class='btn-delete' type='button' onclick='deleteRecord("{table_type}", {row[0]})'>Eliminar</button>
                 </form>
             </td>
         """
@@ -520,6 +505,142 @@ def animales():
     # Creación exitosa, devolver la imagen en la respuesta
     return send_file(BytesIO(imagen_bytes), mimetype='image/jpeg', as_attachment=True, download_name=f'animal_{animal_id}.jpg')
 
+@app.route('/api/usuarios', methods=['POST'])
+def registrar_usuario():
+    try:
+        connection = pyodbc.connect(connection_string)
+        cursor = connection.cursor()
+
+        # Obtener los datos del formulario
+        puesto = request.form.get('puesto')
+        primer_nombre = request.form.get('nombre1')
+        segundo_nombre = request.form.get('nombre2')
+        primer_apellido = request.form.get('apellido1')
+        segundo_apellido = request.form.get('apellido2')
+        direccion = request.form.get('direccion')
+        telefono = request.form.get('telefono')
+        email = request.form.get('email')
+        password = request.form.get('contraseña_usuario')
+
+        if primer_nombre == False or email == False or password == False:
+            # Datos insuficientes
+            return jsonify({'message': 'Datos inválidos'}), 401
+
+        # Conectar a la base de datos
+        connection = pyodbc.connect(connection_string)
+        cursor = connection.cursor()
+
+        # Verificar si el usuario ya existe en la base de datos
+        query = f"SELECT * FROM C##USER_DBA.Usuario WHERE CorreoElectronico = '{email}'"
+        cursor.execute(query)
+        usuario = cursor.fetchone()
+
+        if usuario:
+            return jsonify({'message': 'El usuario ya existe.'}), 401
+        
+        else:
+            # Consulta para crear el nuevo usuario en la base de datos
+            registro_query = """INSERT INTO C##USER_DBA.Usuario
+                            (Puesto, Nombre1, Nombre2, Apellido1, Apellido2, Direccion, Telefono, CorreoElectronico, Contraseña)
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"""
+            cursor.execute(registro_query, (puesto, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, direccion, telefono, email, password))
+            # Realizar el commitn para guardar los datos en la bd y cerrar la conexión
+            connection.commit()
+
+            # Consulta para verificar si el usuario se creó correctamente
+            query = f"SELECT * FROM C##USER_DBA.Usuario WHERE CorreoElectronico = '{email}' AND Contraseña = '{password}'"
+            cursor.execute(query)
+            user = cursor.fetchone()
+
+            # Cerrar la conexión
+            cursor.close()
+            connection.close()
+
+            if user:
+                # Creación exitosa
+                return jsonify({'message': 'Creación exitosa'}), 200
+            else:
+                # No se pudo crear el usuario
+                return jsonify({'message': 'No se pudo crear el usuario'}), 401
+
+    except pyodbc.Error as e:
+        print("Error en la base de datos:", e)
+        return jsonify({'message': 'Error en la base de datos', 'details': str(e)}), 500
+    except Exception as e:
+        print("Error en el servidor:", e)
+        return jsonify({'message': 'Error en el servidor', 'details': str(e)}), 500
+
+@app.route('/api/refugios', methods=['POST'])
+def registrar_refugio():
+    try:
+        connection = pyodbc.connect(connection_string)
+        cursor = connection.cursor()
+
+        # Obtener el ID máximo y calcular el nuevo ID
+        cursor.execute("SELECT MAX(refugio_id) FROM C##USER_DBA.Refugios")
+        max_refugio_id = cursor.fetchone()[0]
+        refugio_id = max_refugio_id + 1 if max_refugio_id else 1
+
+        # Obtener los datos del formulario
+        nombre = request.form.get('nombre')
+        direccion = request.form.get('direccion')
+        ciudad = request.form.get('ciudad_refugio')
+        pais = request.form.get('pais_refugio')
+        codigo_postal = request.form.get('postal_refugio')
+        correo_electronico = request.form.get('email_refugio')
+        telefono = request.form.get('telefono')
+
+        # Insertar el registro del refugio
+        registro_refugios = """INSERT INTO C##USER_DBA.Refugios
+                               (refugio_id, nombre, direccion, ciudad, pais, codigo_postal, correo_electronico, telefono)
+                               VALUES (?, ?, ?, ?, ?, ?, ?, ?)"""
+        cursor.execute(registro_refugios, (refugio_id, nombre, direccion, ciudad, pais, codigo_postal, correo_electronico, telefono))
+
+        # Guardar cambios en la base de datos
+        connection.commit()
+
+        # Cerrar la conexión
+        cursor.close()
+        connection.close()
+
+        return jsonify({'message': 'Refugio registrado con éxito', 'refugio_id': refugio_id}), 201
+    except Exception as e:
+        return jsonify({'message': str(e)}), 500
+
+@app.route('/api/veterinarios', methods=['POST'])
+def registrar_veterinario():
+    try:
+        connection = pyodbc.connect(connection_string)
+        cursor = connection.cursor()
+
+        # Obtener el ID máximo y calcular el nuevo ID
+        cursor.execute("SELECT MAX(veterinario_id) FROM C##USER_DBA.Veterinarios")
+        max_veterinario_id = cursor.fetchone()[0]
+        veterinario_id = max_veterinario_id + 1 if max_veterinario_id else 1
+
+        # Obtener los datos del formulario
+        nombre = request.form.get('nombre')
+        apellido = request.form.get('apellido')
+        direccion = request.form.get('direccion')
+        email = request.form.get('email')
+        telefono = request.form.get('telefono')
+
+        # Insertar el registro del veterinario
+        registro_veterinarios = """INSERT INTO C##USER_DBA.Veterinarios
+                                   (veterinario_id, nombre, apellido, direccion, email, telefono)
+                                   VALUES (?, ?, ?, ?, ?, ?)"""
+        cursor.execute(registro_veterinarios, (veterinario_id, nombre, apellido, direccion, email, telefono))
+
+        # Guardar cambios en la base de datos
+        connection.commit()
+
+        # Cerrar la conexión
+        cursor.close()
+        connection.close()
+
+        return jsonify({'message': 'Veterinario registrado con éxito', 'veterinario_id': veterinario_id}), 201
+    except Exception as e:
+        return jsonify({'message': str(e)}), 500
 
 
 @app.route('/api/refugios', methods=['GET'])
@@ -559,6 +680,49 @@ def get_propietarios():
     cursor.close()
     connection.close()
     return jsonify(propietarios)
+
+@app.route('/api/eliminar/<string:table_type>/<int:id>', methods=['DELETE'])
+def eliminar_registro(table_type, id):
+    try:
+        connection = pyodbc.connect(connection_string)
+        cursor = connection.cursor()
+
+        # Determinar la tabla y la columna de ID basándose en el tipo
+        if table_type == 'usuarios':
+            table_name = 'C##USER_DBA.Usuario'
+            id_column = 'Usuario_id'
+        elif table_type == 'animales':
+            table_name = 'C##USER_DBA.Animales'
+            id_column = 'animal_id'
+        elif table_type == 'refugios':
+            table_name = 'C##USER_DBA.Refugios'
+            id_column = 'refugio_id'
+        elif table_type == 'veterinarios':
+            table_name = 'C##USER_DBA.Veterinarios'
+            id_column = 'veterinario_id'
+        else:
+            return jsonify({'message': 'Tipo de entidad no reconocido'}), 400
+
+        # Eliminar el registro
+        cursor.execute(f"DELETE FROM {table_name} WHERE {id_column} = ?", id)
+        
+        if cursor.rowcount == 0:
+            return jsonify({'message': f'No se encontró el registro con ID {id} en {table_type}'}), 404
+
+        # Guardar cambios en la base de datos
+        connection.commit()
+
+        # Cerrar la conexión
+        cursor.close()
+        connection.close()
+
+        return jsonify({'message': f'{table_type.capitalize()} eliminado con éxito'}), 200
+    except pyodbc.Error as e:
+        print("Error en la base de datos:", e)
+        return jsonify({'message': 'Error en la base de datos', 'details': str(e)}), 500
+    except Exception as e:
+        print("Error en el servidor:", e)
+        return jsonify({'message': 'Error en el servidor', 'details': str(e)}), 500
 
 
 
