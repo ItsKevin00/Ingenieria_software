@@ -21,7 +21,7 @@ IMAGES_DIR = os.path.join(app.static_folder, 'img')
 def index():
     return render_template("Login.html")
 
-# Ruta para la página de inicio
+# RUTAS DE LA PÁGINAS
 @app.route("/index")
 def inicio():
     return render_template("index.html")
@@ -50,6 +50,8 @@ def get_results(query):
     connection.close()
     return resultados
 
+
+# ADMINISTRACIÓN DE REGISTROS
 @app.route("/animales")
 def animales_tabla():
     titulo = "Administrar Animales"
@@ -78,7 +80,6 @@ def animales_tabla():
     tipo = "animales"
     html_table = build_html_table(resultados, headers, "animales")
     return render_template('tablas.html', titulo=titulo, html_table=html_table, tipo=tipo)
-
 
 # Ruta para administrar usuarios
 @app.route("/usuarios")
@@ -111,8 +112,6 @@ def refugios():
     html_table = build_html_table(resultados, headers, "refugios")
     return render_template('tablas.html', titulo=titulo, html_table=html_table, tipo=tipo)
 
-
-
 # Ruta para administrar veterinarios
 @app.route("/veterinarios")
 def veterinarios():
@@ -130,6 +129,14 @@ def veterinarios():
     html_table = build_html_table(resultados, headers, "veterinarios")
     return render_template('tablas.html', titulo=titulo, html_table=html_table, tipo=tipo)
 
+
+###############################################
+#                                             #
+#              OPERACIONES CRUD               #
+#                                             #
+###############################################
+
+# UPDATE REGISTROS     
 @app.route("/update_usuario", methods=["POST"])
 def update_usuario():
     usuario_id = request.form["id"]
@@ -254,7 +261,7 @@ def update_veterinario():
         print(f"Error: {e}")
         return str(e), 500
 
-
+# READ REGISTROS
 def build_html_table(data, headers, table_type):
     html_table = "<table  class='dynamic-table'>"
     html_table += "<thead class='thead-light'><tr>"
@@ -356,6 +363,8 @@ def protected_route(user_id):
     return jsonify({'message': 'Acceso permitido', 'user_id': user_id})
 
 @app.route('/api/login', methods=['POST'])
+
+# CREATE REGISTROS
 def login():
     # Obtener las credenciales de la solicitud
     data = request.get_json()
@@ -637,45 +646,7 @@ def registrar_veterinario():
     except Exception as e:
         return jsonify({'message': str(e)}), 500
 
-
-@app.route('/api/refugios', methods=['GET'])
-def get_refugios():
-    search_query = request.args.get('search', '')
-    if search_query:
-        search_query = search_query.upper()
-    connection = pyodbc.connect(connection_string)
-    cursor = connection.cursor()
-    query = """
-        SELECT refugio_id, nombre
-        FROM C##USER_DBA.Refugios
-        WHERE upper(nombre) like ?
-        AND ROWNUM <= 10
-    """
-    cursor.execute(query, ('%' + search_query + '%',))
-    refugios = [{'id': row[0], 'nombre': row[1]} for row in cursor.fetchall()]
-    cursor.close()
-    connection.close()
-    return jsonify(refugios)
-
-@app.route('/api/propietarios', methods=['GET'])
-def get_propietarios():
-    search_query = request.args.get('search', '')
-    if search_query:
-        search_query = search_query.upper()
-    connection = pyodbc.connect(connection_string)
-    cursor = connection.cursor()
-    query = """
-        SELECT propietario_id, nombre, apellido
-        FROM C##USER_DBA.Propietarios
-        WHERE upper(nombre) like ? OR upper(apellido) like ?
-        AND ROWNUM <= 10
-    """
-    cursor.execute(query, ('%' + search_query + '%', '%' + search_query + '%'))
-    propietarios = [{'id': row[0], 'nombre': f"{row[1]} {row[2]}"} for row in cursor.fetchall()]
-    cursor.close()
-    connection.close()
-    return jsonify(propietarios)
-
+# ELIMINAR REGISTROS
 @app.route('/api/eliminar/<string:table_type>/<int:id>', methods=['DELETE'])
 def eliminar_registro(table_type, id):
     try:
@@ -718,6 +689,46 @@ def eliminar_registro(table_type, id):
     except Exception as e:
         print("Error en el servidor:", e)
         return jsonify({'message': 'Error en el servidor', 'details': str(e)}), 500
+
+# OBTENER DATOS
+@app.route('/api/refugios', methods=['GET'])
+def get_refugios():
+    search_query = request.args.get('search', '')
+    if search_query:
+        search_query = search_query.upper()
+    connection = pyodbc.connect(connection_string)
+    cursor = connection.cursor()
+    query = """
+        SELECT refugio_id, nombre
+        FROM C##USER_DBA.Refugios
+        WHERE upper(nombre) like ?
+        AND ROWNUM <= 10
+    """
+    cursor.execute(query, ('%' + search_query + '%',))
+    refugios = [{'id': row[0], 'nombre': row[1]} for row in cursor.fetchall()]
+    cursor.close()
+    connection.close()
+    return jsonify(refugios)
+
+@app.route('/api/propietarios', methods=['GET'])
+def get_propietarios():
+    search_query = request.args.get('search', '')
+    if search_query:
+        search_query = search_query.upper()
+    connection = pyodbc.connect(connection_string)
+    cursor = connection.cursor()
+    query = """
+        SELECT propietario_id, nombre, apellido
+        FROM C##USER_DBA.Propietarios
+        WHERE upper(nombre) like ? OR upper(apellido) like ?
+        AND ROWNUM <= 10
+    """
+    cursor.execute(query, ('%' + search_query + '%', '%' + search_query + '%'))
+    propietarios = [{'id': row[0], 'nombre': f"{row[1]} {row[2]}"} for row in cursor.fetchall()]
+    cursor.close()
+    connection.close()
+    return jsonify(propietarios)
+
 
 
 
