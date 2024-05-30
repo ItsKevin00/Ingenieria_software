@@ -76,8 +76,23 @@ function openEditModal(type, ...args) {
     }
 }
 
+var deleteParams = {};
+
 function deleteRecord(tableType, id) {
-    var apiUrl = '/api/eliminar/' + tableType + '/' + id;
+    deleteParams = { tableType, id };
+    showModal();
+}
+
+function showModal() {
+    document.getElementById('deleteModal').style.display = 'flex';
+}
+
+function closeModal() {
+    document.getElementById('deleteModal').style.display = 'none';
+}
+
+function confirmDelete() {
+    var apiUrl = '/api/eliminar/' + deleteParams.tableType + '/' + deleteParams.id;
 
     fetch(apiUrl, {
         method: 'DELETE'
@@ -93,11 +108,13 @@ function deleteRecord(tableType, id) {
     })
     .then(data => {
         console.log(data);
-        alert(data.message);
+        // alert(data.message);
         window.location.reload();
     })
     .catch(error => {
         console.error('Error al realizar la solicitud:', error);
         alert('Error al realizar la solicitud: ' + error.message);
     });
+
+    closeModal();
 }

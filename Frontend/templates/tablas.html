@@ -67,6 +67,14 @@
         {% endif %}
     </div>
 
+    <div id="deleteModal" style="display: none;">
+        <div class="modal-body-delete">
+            <p>¿Está seguro de que desea eliminar este registro?</p>
+            <button onclick="confirmDelete()">Eliminar</button>
+            <button onclick="closeModal()">Cancelar</button>
+        </div>
+    </div>
+
     <!-- Modal de Edición Usuarios-->
     <div class="modal fade" id="editUsuarioModal" tabindex="-1" aria-labelledby="editUsuarioModalLabel" aria-hidden="true">
         <div class="modal-dialog">
